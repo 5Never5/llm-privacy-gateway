@@ -1,57 +1,60 @@
-# 脱敏规则与使用边界
+# Masking rules and operating limits
 
-## 一、内置正则规则（masker.py BUILTIN_RULES）
+## 1. Built-in regex rules (`masker.py`, `BUILTIN_RULES`)
 
-| 类型 | 覆盖内容 | 备注 |
+| Type | Covers | Notes |
 | --- | --- | --- |
-| ID_CARD | 18 位身份证号 | 17 位数字 + 校验位 |
-| PHONE | 大陆手机号 | 1[3-9] 开头 11 位 |
-| TEL | 座机 | 0 开头，区号可带连字符 |
-| EMAIL | 邮箱地址 | 通用格式 |
-| BANKCARD | 16–19 位数字串 | 与身份证存在重叠可能，先被 ID_CARD 命中即按身份证处理 |
-| IP | IPv4 地址 | 完整四段 |
-| AMOUNT | 金额 | 仅当后跟 元/人民币/RMB/￥/¥ 时命中 |
+| ID_CARD | 18-digit ID number | 17 digits plus a check digit |
+| PHONE | Mobile number | 11 digits beginning with `1[3-9]` |
+| TEL | Landline number | begins with `0`; the area code may use a hyphen |
+| EMAIL | Email address | general format |
+| BANKCARD | 16–19 digit run | may overlap with ID_CARD; if ID_CARD matches first the value is treated as an ID |
+| IP | IPv4 address | all four octets |
+| AMOUNT | Monetary amount | matched when followed by a currency code/symbol, or when directly preceded by a currency symbol |
 
-## 二、自定义词典（推荐必须配置）
+**Locale note** — the `ID_CARD`, `PHONE` and `TEL` defaults cover the formats in most common use in mainland China. `AMOUNT` covers the usual ISO currency codes (`RMB`, `CNY`, `USD`, `EUR`, `GBP`, `JPY`, `HKD`, `SGD`, `AUD`, `CAD`, `CHF`), the yuan and renminbi markers (`U+5143`; `U+4EBA U+6C11 U+5E01`), and the common currency signs — dollar (`U+0024`), euro (`U+20AC`), pound (`U+00A3`), yen (`U+00A5`) and fullwidth yen (`U+FFE5`). To support other locales, extend `BUILTIN_RULES` in `masker.py` or list the literal values in `custom_words.json`.
 
-企业机密（人名、公司名、项目代号、产品代号、专有名词）正则无法覆盖，必须通过词典补足。
+## 2. Custom dictionary (strongly recommended)
 
-文件位置：`~/.llm-privacy-gate/custom_words.json`
+Company secrets — people, company names, project codenames, product codenames, proper nouns — cannot be covered by regex and must be supplied through the dictionary.
+
+File location: `~/.llm-privacy-gate/custom_words.json`
 
 ```json
 {
-  "words": ["某某科技有限公司", "张某某", "项目代号X", "核心配方A"]
+  "words": ["Acme Corporation", "John Smith", "Project Falcon", "core-formula-A"]
 }
 ```
 
-要点：
-- 词典词会整词替换为 `{DICT-xxxx-N}` 令牌，还原时换回原文；
-- 词条越长优先匹配；
-- 敏感度判定：若输入命中词典词，建议按"高敏"处理（走本地模型或直接拒绝出域）。
+Points to note:
+- Each dictionary term is replaced whole with a `{DICT-xxxx-N}` token and swapped back on restore;
+- Longer terms are matched first;
+- Sensitivity: if the input hits a dictionary term, treat it as high sensitivity (route to a local model, or refuse to send it out at all).
 
-## 三、会话级随机令牌
+## 3. Session-level random tokens
 
-- 每次运行生成 4 位随机会话后缀，令牌形如 `{PHONE-a3f9-1}`；
-- 同一真实值在同一会话内映射到同一令牌（保证语义一致）；
-- 跨会话同一真实值令牌不同，防止中转站/服务商通过令牌关联用户身份。
+- Each run generates a 4-character random session suffix, producing tokens of the form `{PHONE-a3f9-1}`;
+- The same real value maps to the same token within one session, so semantics stay consistent;
+- The same real value maps to a different token across sessions, so a relay or provider cannot correlate a user's identity through tokens.
 
-## 四、安全边界（重要，使用前必读）
+## 4. Security boundary (important — read before use)
 
-1. **脱敏只保护"命中规则的内容"**。未命中的普通文本（业务上下文、文档正文）仍会出域——中转站仍能看到你讨论的话题。
-2. **模型输出可见**。返回结果经中转站/服务商，其内容对它们可见；还原发生在本地，但"分析结论"本身不是秘密。
-3. **文件/图片本体永远不出域**。必须先经 local_extract.py 在本地提取文字，只发送提取文本。
-4. **高危内容建议不出域**。核心商业机密建议走本地模型（--local / Ollama），或仅用 crypto_store.py 加密存储，不送任何模型。
-5. **绝对语义**："模型完全理解 + 服务商完全无法解密"不可兼得。本网关实现的是"真实敏感数据不可获取、窃取亦不可还原"。
+1. **Masking only protects rule-matched content.** Unmatched ordinary text (business context, document body) still leaves the boundary — the relay can still see the topic you are discussing.
+2. **Model output is visible.** Anything returned passes through the relay/provider and is visible to them; restoration happens locally, but the "analysis conclusion" itself is not a secret.
+3. **File and image bodies never leave the boundary.** Run `local_extract.py` first to extract text locally, and send only the extracted text.
+4. **Keep high-risk content from leaving at all.** For core business secrets prefer a local model (`--local` / Ollama), or store them with `crypto_store.py` and send them to no model.
+5. **On absolutes:** "the model fully understands it and the provider cannot decrypt it" is not achievable simultaneously. What this gateway delivers is "real sensitive data is unobtainable, and theft is unreconstructable".
 
-## 五、严格模式（核心机密默认不出域）
+## 5. Strict mode (core secrets stay off the wire)
 
-- `gateway.py --strict`：只要输入命中自定义词典（DICT 令牌），**拒绝发送**，仅写审计（mode=strict-blocked，exit 4），并提示先用 `crypto_store.py` 加密存储；
-- 含义：词典词 = 企业核心机密名单。**默认（不加 --strict）词典词会脱敏后出域**；核心机密场景请始终加 `--strict`；
-- 没有本地模型也能做到"核心机密不出域"——因为它根本不发送，不需要任何推理。
+- `gateway.py --strict`: as soon as the input hits the custom dictionary (a `DICT` token) the request is **refused**, only an audit entry is written (`mode=strict-blocked`, exit 4), and the user is told to store the file with `crypto_store.py` first;
+- Meaning: dictionary terms are the enterprise core-secret list. **By default (without `--strict`) dictionary terms are masked and do leave the boundary**; for core-secret scenarios always add `--strict`;
+- No local model is needed to keep core secrets off the wire — they are never sent, so no inference is required.
 
-## 六、审计
+## 6. Audit
 
-每次请求追加一行到 `~/.llm-privacy-gate/audit.jsonl`：
+Every request appends one line to `~/.llm-privacy-gate/audit.jsonl`:
 `ts / mode / endpoint / in_chars / out_chars / masked_fields / cost_ms / leaks`
-出现 `leak-blocked` 条目 = 模型输出泄露真实值，已阻止展示，应立即排查；
-出现 `strict-blocked` 条目 = 严格模式拦截了含词典词的内容，属预期行为。
+
+- A `leak-blocked` entry means the model output exposed a real value; display was blocked and it should be investigated immediately;
+- A `strict-blocked` entry means strict mode stopped content containing a dictionary term — this is expected behaviour.

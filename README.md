@@ -20,7 +20,7 @@ A cross-agent skill: sensitive fields are tokenized locally, files/images are pa
 
 | Module | Script | What it does |
 | --- | --- | --- |
-| Masking | `scripts/masker.py` | ID/mobile/email/bank card/IP/amount + custom dictionary → session-random tokens |
+| Masking | `scripts/masker.py` | ID/mobile/landline/email/bank card/IP/amount + custom dictionary → session-random tokens |
 | Local extraction | `scripts/local_extract.py` | Text from PDF/Word/Excel/images(OCR) locally — bodies never upload |
 | Encrypted storage | `scripts/crypto_store.py` | AES-256-GCM for core secrets; key stays local |
 | Privacy gateway | `scripts/gateway.py` | Extract → mask → send → restore + leak check → audit |
@@ -50,18 +50,18 @@ First run per environment: `python scripts/setup_deps.py`
 ## Quick start
 
 ```bash
-# Dry-run (no send): preview what leaves
-python scripts/gateway.py --text "张三的手机 13800138000，金额 5000 元" --dry-run
+# Dry-run (no send): preview exactly what would leave your machine
+python scripts/gateway.py --text "Invoice for Acme Corp: card 4111111111111111, total 5,000 USD" --dry-run
 
-# Send via relay (API key via env var: $env:RELAY_API_KEY=... / export RELAY_API_KEY=...)
+# Send through a relay (API key from an env var: $env:RELAY_API_KEY=... / export RELAY_API_KEY=...)
 set RELAY_API_KEY=sk-xxx
-python scripts/gateway.py --text "分析这份报价单：李四，报价 12000 元" --endpoint relay
+python scripts/gateway.py --text "Summarise this quote: Jane Doe, quoted 12,000 USD" --endpoint relay
 
 # File (text extracted locally, body never leaves)
-python scripts/gateway.py --file ./合同/报价单.pdf --endpoint relay
+python scripts/gateway.py --file ./contracts/quote.pdf --endpoint relay
 
 # Strict mode: enterprise-dictionary hits refused outbound
-python scripts/gateway.py --file ./机密/规划.docx --endpoint relay --strict
+python scripts/gateway.py --file ./confidential/roadmap.docx --endpoint relay --strict
 ```
 
 ## Config
@@ -73,3 +73,7 @@ Copy `references/config.example.json` → `~/.llm-privacy-gate/config.json`. Pri
 - Masking protects only rule-matched content; unmatched context still leaves.
 - "Model fully understands + provider can't decrypt" is cryptographically impossible. This gateway delivers: real data unobtainable, theft unreconstructable.
 - High-risk content (core secrets): use `--local` or encrypted storage — keep off the wire.
+
+## Translations
+
+- Simplified Chinese (zh-CN): [README](docs/i18n/README.zh-CN.md) · [Skill](docs/i18n/SKILL.zh-CN.md) · [Rules](docs/i18n/RULES.zh-CN.md)

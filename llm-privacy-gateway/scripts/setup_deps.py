@@ -1,33 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-llm-privacy-gateway · 依赖检查与安装 (setup_deps.py)
+llm-privacy-gateway - dependency check and install (setup_deps.py)
 
-跨智能体工具（豆包工作 / Codex / DeepSeek Harness / Claude 系等）首次运行本
-Skill 前，用本脚本补齐运行依赖。只检查不安装用 --check。
+Run this once before the first use of this skill in a new environment
+(Doubao Work / Codex / DeepSeek Harness / Claude family etc.) to install the
+runtime dependencies. Use --check to inspect without installing.
 
-用法:
-  python setup_deps.py --check        # 只检查，列出缺失项
-  python setup_deps.py                # 安装缺失的核心依赖（默认）
-  python setup_deps.py --install-ocr  # 额外安装 OCR 依赖（图片文字提取用）
+Usage:
+  python setup_deps.py --check        # check only, list what is missing
+  python setup_deps.py                # install the missing core dependencies (default)
+  python setup_deps.py --install-ocr  # additionally install the OCR dependencies
 """
 import argparse
 import importlib.util
 import subprocess
 import sys
 
-# 核心依赖：模块名 -> 用途
+# Core dependencies: module name -> what it is for
 REQUIRED = {
-    "cryptography": "AES-256-GCM 加密",
-    "pypdf": "PDF 文字提取",
-    "docx": "Word(.docx) 提取",
-    "openpyxl": "Excel(.xlsx) 提取",
-    "PIL": "图片基础（OCR 前置）",
+    "cryptography": "AES-256-GCM encryption",
+    "pypdf": "PDF text extraction",
+    "docx": "Word (.docx) extraction",
+    "openpyxl": "Excel (.xlsx) extraction",
+    "PIL": "image basics (prerequisite for OCR)",
 }
-# 可选 OCR 依赖
+# Optional OCR dependencies
 OCR_OPTIONAL = {
-    "pytesseract": "Tesseract OCR 接口（需另装 Tesseract 程序与 chi_sim 语言包）",
-    "paddleocr": "PaddleOCR（中文效果好，体积较大，另需 paddlepaddle）",
+    "pytesseract": "Tesseract OCR binding (also needs the Tesseract program and the traineddata for your language)",
+    "paddleocr": "PaddleOCR (larger download, also needs paddlepaddle)",
 }
 
 
@@ -36,38 +37,40 @@ def _have(mod):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="llm-privacy-gateway 依赖检查/安装")
-    ap.add_argument("--check", action="store_true", help="只检查不安装")
-    ap.add_argument("--install-ocr", action="store_true", help="额外安装 OCR 依赖")
+    ap = argparse.ArgumentParser(description="llm-privacy-gateway dependency check/install")
+    ap.add_argument("--check", action="store_true", help="check only, do not install")
+    ap.add_argument("--install-ocr", action="store_true", help="also install the OCR dependencies")
     args = ap.parse_args()
 
-    print("== 核心依赖 ==")
+    print("== Core dependencies ==")
     missing = []
     for mod, why in REQUIRED.items():
         ok = _have(mod)
-        print("  [%s] %-13s %s" % ("OK " if ok else "缺失", mod, why))
+        print("  [%-7s] %-13s %s" % ("ok" if ok else "missing", mod, why))
         if not ok:
             missing.append(mod)
 
     if args.check:
-        print("缺失项：%s" % ("，".join(missing) if missing else "无，可直接使用"))
+        print("Missing: %s" % (", ".join(missing) if missing else "none - ready to use"))
         sys.exit(0 if not missing else 1)
 
     if missing:
-        print("正在安装：%s ..." % " ".join(missing))
+        print("Installing: %s ..." % " ".join(missing))
         subprocess.check_call([sys.executable, "-m", "pip", "install"] + missing)
-        print("安装完成。")
+        print("Install complete.")
 
     if args.install_ocr:
         for mod, why in OCR_OPTIONAL.items():
             if not _have(mod):
-                print("正在安装 OCR 依赖：%s（%s）" % (mod, why))
+                print("Installing OCR dependency: %s (%s)" % (mod, why))
                 try:
                     subprocess.check_call(
                         [sys.executable, "-m", "pip", "install", mod])
                 except subprocess.CalledProcessError:
-                    print("  安装失败，请按 local_extract.py 的提示手动安装。")
-    print("依赖就绪。OCR 未装也不影响文本/PDF/Word/Excel 处理。")
+                    print("  Install failed; follow the hint printed by "
+                          "local_extract.py to install it manually.")
+    print("Dependencies ready. A missing OCR engine does not affect "
+          "text/PDF/Word/Excel handling.")
 
 
 if __name__ == "__main__":

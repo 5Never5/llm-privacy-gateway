@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-llm-privacy-gateway · 隐私网关主程序 (gateway.py)
+llm-privacy-gateway - privacy gateway (gateway.py)
 
-编排完整管线：输入(文本/文件) → 本地提取 → 敏感度判定 → 脱敏(令牌化)
-→ 发送(本地模型 / 官方API / 中转站) → 还原 + 泄露校验 → 审计日志。
+Orchestrates the whole pipeline: input (text/file) -> local extraction ->
+sensitivity check -> masking (tokenization) -> send (local model / official API
+/ relay) -> restore + leak check -> audit log.
 
-安全边界：
-  - 真实内容（含文件、图片本体）永不离开本机
-  - 出域的只有"已脱敏文本"（占位符 + 无敏感规则命中的普通文本）
-  - 任何端点（包括中转站）都被视为不可信通道，只接收脱敏文本
-  - 审计日志记录每次请求的出域情况
+Security boundary:
+  - Real content (including file and image bodies) never leaves the machine
+  - The only thing leaving the boundary is masked text (placeholders plus
+    ordinary text that matched no sensitive rule)
+  - Every endpoint, relays included, is treated as an untrusted channel that
+    receives masked text only
+  - The audit log records what left the boundary for every request
 
-用法:
-  python gateway.py --text "帮我分析张三的合同，金额 5000 元" --dry-run
-  python gateway.py --file 合同.pdf --endpoint relay --model gpt-4o-mini
-  python gateway.py --text "..." --local                 # 走本地 Ollama
-  python gateway.py --text "..." --endpoint official     # 走官方 API
-环境变量: OPENAI_API_KEY / RELAY_API_KEY / OLLAMA 等，见 references/config.example.json
+Usage:
+  python gateway.py --text "Analyse John Smith's contract, total 5,000 USD" --dry-run
+  python gateway.py --file contract.pdf --endpoint relay --model gpt-4o-mini
+  python gateway.py --text "..." --local                 # use local Ollama
+  python gateway.py --text "..." --endpoint official     # use the official API
+Environment variables: OPENAI_API_KEY / RELAY_API_KEY / OLLAMA etc.
+See references/config.example.json.
 """
 import argparse
 import json
@@ -38,14 +42,16 @@ AUDIT_FILE = os.path.join(HOME_DIR, "audit.jsonl")
 USER_CONFIG = os.path.join(HOME_DIR, "config.json")
 
 SYSTEM_PROMPT = (
-    "提示词中 {类型-xxxx-N} 形式的令牌是本地脱敏的敏感字段占位符，"
-    "请直接基于上下文正常回答：不要追问占位符的真实内容，不要猜测或编造，"
-    "不要把这些令牌复制到回答文本之外的地方。"
+    "Tokens of the form {TYPE-xxxx-N} in the prompt are locally masked "
+    "placeholders for sensitive fields. Answer normally from the surrounding "
+    "context: do not ask what the placeholders really contain, do not guess or "
+    "fabricate their values, and do not copy those tokens anywhere outside the "
+    "answer text."
 )
 
 
 def load_config(path=None):
-    """配置优先级：--config > 环境变量 LPG_CONFIG > ~/.llm-privacy-gate/config.json > 默认示例"""
+    """Config priority: --config > env var LPG_CONFIG > ~/.llm-privacy-gate/config.json > bundled example"""
     candidates = []
     if path:
         candidates.append(path)
@@ -58,28 +64,28 @@ def load_config(path=None):
         if os.path.isfile(p):
             with open(p, "r", encoding="utf-8") as f:
                 return json.load(f)
-    raise SystemExit("找不到任何配置文件：%s" % " / ".join(candidates))
+    raise SystemExit("No config file found: %s" % " / ".join(candidates))
 
 
 def resolve_endpoint(cfg, name, use_local):
     if use_local:
         local = cfg.get("local")
         if not local or not local.get("base_url"):
-            raise SystemExit("--local 已指定，但配置中未定义 local 端点")
+            raise SystemExit("--local was given but no local endpoint is defined in the config")
         return {"name": "local", "kind": "local", **local}
     eps = cfg.get("endpoints", [])
     if name:
         for e in eps:
             if e.get("name") == name:
                 return {"kind": "remote", **e}
-        raise SystemExit("配置中不存在端点：%s" % name)
+        raise SystemExit("No such endpoint in config: %s" % name)
     for e in eps:
         key_env = e.get("api_key_env", "")
         if key_env and os.environ.get(key_env):
             return {"kind": "remote", **e}
     if eps:
         return {"kind": "remote", **eps[0]}
-    raise SystemExit("未配置任何端点，请编辑 references/config.example.json")
+    raise SystemExit("No endpoints configured; edit references/config.example.json")
 
 
 def chat_completion(endpoint, model, messages, timeout=180):
@@ -97,13 +103,13 @@ def chat_completion(endpoint, model, messages, timeout=180):
             data = json.loads(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")[:500]
-        raise SystemExit("HTTP %s 调用失败：%s" % (exc.code, detail))
+        raise SystemExit("HTTP %s request failed: %s" % (exc.code, detail))
     except urllib.error.URLError as exc:
-        raise SystemExit("网络错误：%s" % exc.reason)
+        raise SystemExit("Network error: %s" % exc.reason)
     try:
         return data["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError):
-        raise SystemExit("响应格式异常：%s" % json.dumps(data, ensure_ascii=False)[:500])
+        raise SystemExit("Unexpected response shape: %s" % json.dumps(data, ensure_ascii=False)[:500])
 
 
 def audit(entry):
@@ -115,22 +121,24 @@ def audit(entry):
 
 def main():
     ap = argparse.ArgumentParser(
-        description="llm-privacy-gateway 隐私网关：真实数据不出域")
+        description="llm-privacy-gateway: real data never leaves the machine")
     src = ap.add_mutually_exclusive_group(required=True)
-    src.add_argument("--text", default=None, help="输入文本")
-    src.add_argument("--file", default=None, help="输入本地文件（本地提取文字）")
-    ap.add_argument("--endpoint", default=None, help="端点名：official / relay 等")
+    src.add_argument("--text", default=None, help="input text")
+    src.add_argument("--file", default=None, help="input file (text extracted locally)")
+    ap.add_argument("--endpoint", default=None, help="endpoint name: official / relay etc.")
     ap.add_argument("--local", action="store_true",
-                    help="可选：本机装有 Ollama 时强制走本地模型；本 Skill 默认不需要")
-    ap.add_argument("--model", default=None, help="覆盖模型名")
+                    help="optional: force the local Ollama model when installed; not required by default")
+    ap.add_argument("--model", default=None, help="override the model name")
     ap.add_argument("--dry-run", action="store_true",
-                    help="只打印将发送的脱敏载荷与映射统计，不真正发送")
+                    help="print the masked payload and mapping stats without sending anything")
     ap.add_argument("--strict", action="store_true",
-                    help="严格模式：输入命中企业词典(DICT 核心机密)时拒绝发送，仅审计，核心机密不出域")
-    ap.add_argument("--config", default=None, help="配置文件路径")
-    ap.add_argument("--no-mask", action="store_true", help="跳过脱敏（仅测试用）")
-    ap.add_argument("--prompt", default="请根据输入内容完成分析并直接给出结论。",
-                    help="任务提示词（可选）")
+                    help="strict mode: refuse to send when the input hits the enterprise dictionary (DICT core secrets), audit only")
+    ap.add_argument("--config", default=None, help="path to the config file")
+    ap.add_argument("--no-mask", action="store_true", help="skip masking (testing only)")
+    ap.add_argument("--ocr-lang", default=None,
+                    help="OCR language set for image inputs (default: en; use ch for Chinese, en+ch for mixed)")
+    ap.add_argument("--prompt", default="Analyse the input and give your conclusion directly.",
+                    help="task prompt (optional)")
     args = ap.parse_args()
 
     cfg = load_config(args.config)
@@ -140,56 +148,58 @@ def main():
     if endpoint.get("kind") == "remote":
         key_env = endpoint.get("api_key_env")
         if key_env and not os.environ.get(key_env):
-            print("[警告] 未设置环境变量 %s 的 API Key，请求可能被端点拒绝。"
-                  % key_env, file=sys.stderr)
+            print("[warn] Environment variable %s is not set, so the endpoint may "
+                  "reject the request." % key_env, file=sys.stderr)
 
-    # 1) 输入：文件在本地提取文字，本体不出域
+    # 1) Input: files are read locally, the body never leaves the machine
     input_note = ""
     if args.file:
-        raw = local_extract.extract_text(args.file)
-        input_note = "文件 %s 已在本地提取 %d 字符，文件本体未上传" % (
+        raw = local_extract.extract_text(args.file, ocr_lang=args.ocr_lang)
+        input_note = "file %s: extracted %d characters locally, body not uploaded" % (
             os.path.basename(args.file), len(raw))
     else:
         raw = args.text
-    print("[输入] %s" % input_note if input_note else "[输入] 文本 %d 字符" % len(raw))
+    print("[input] %s" % input_note if input_note else "[input] text, %d characters" % len(raw))
 
-    # 2) 脱敏
+    # 2) Masking
     if args.no_mask:
         masked = raw
         masker = None
-        print("[脱敏] 已跳过（--no-mask，仅测试）")
+        print("[mask] skipped (--no-mask, testing only)")
     else:
         masker = Masker()
         masked = masker.mask(raw)
         stats = masker.masked_stats()
-        print("[脱敏] 命中 %d 个敏感字段，生成 %d 个令牌，会话 %s"
+        print("[mask] %d sensitive fields matched, %d tokens generated, session %s"
               % (stats["fields"], stats["tokens"], masker.session_id))
         if stats["fields"] == 0 and len(_load_custom_words()) == 0:
-            print("[提示] 未命中任何敏感字段——若内容含企业机密，请补充自定义词典"
-                  "（%s）" % os.path.join(HOME_DIR, "custom_words.json"))
+            print("[hint] No sensitive field matched. If the content holds company "
+                  "secrets, extend the custom dictionary (%s)."
+                  % os.path.join(HOME_DIR, "custom_words.json"))
 
-    # 2.5) 严格模式：命中企业词典（核心机密）→ 拒绝出域
+    # 2.5) Strict mode: an enterprise-dictionary hit (core secret) refuses the request
     if args.strict and masker and any(t.startswith("{DICT-") for t in masker.mapping):
-        print("[阻止] 严格模式：内容命中企业词典（核心机密），拒绝发送。"
-              "可先用 crypto_store.py 加密存储。", file=sys.stderr)
+        print("[blocked] Strict mode: the content hit the enterprise dictionary "
+              "(core secret), refusing to send. Store it with crypto_store.py first.",
+              file=sys.stderr)
         audit({"mode": "strict-blocked", "endpoint": endpoint["name"],
                "masked_fields": masker.masked_stats()["fields"]})
         sys.exit(4)
 
-    # 3) 构建载荷
+    # 3) Build the payload
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": args.prompt + "\n\n" + masked},
     ]
-    print("[端点] %s（%s）模型 %s" % (
-        endpoint["name"], endpoint.get("kind", ""), model or "(默认)"))
+    print("[endpoint] %s (%s) model %s" % (
+        endpoint["name"], endpoint.get("kind", ""), model or "(default)"))
 
     if args.dry_run:
-        print("\n===== 将发送的脱敏载荷（dry-run，未发送）=====")
+        print("\n===== Masked payload that would be sent (dry-run, nothing sent) =====")
         print(json.dumps({"model": model, "messages": messages},
                          ensure_ascii=False, indent=2))
         if masker:
-            print("\n===== 脱敏映射（仅本地）=====")
+            print("\n===== Masking map (local only) =====")
             for t, v in masker.mapping.items():
                 print("  %s -> %s" % (t, v))
         audit({"mode": "dry-run", "endpoint": endpoint["name"],
@@ -197,18 +207,18 @@ def main():
                if masker else 0})
         return
 
-    # 4) 发送
+    # 4) Send
     t0 = time.time()
-    print("[发送] 正在请求 %s ..." % endpoint["name"])
+    print("[send] requesting %s ..." % endpoint["name"])
     output = chat_completion(endpoint, model, messages)
     cost_ms = int((time.time() - t0) * 1000)
 
-    # 5) 还原 + 泄露校验
+    # 5) Restore + leak check
     if masker:
         leaks = masker.check_leak(output)
         if leaks:
-            print("[严重] 模型输出泄露了 %d 个真实值，已阻止展示！" % len(leaks),
-                  file=sys.stderr)
+            print("[critical] the model output leaked %d real value(s); display blocked!"
+                  % len(leaks), file=sys.stderr)
             for item in leaks:
                 print("  %s -> %s" % (item["token"], item["value"]),
                       file=sys.stderr)
@@ -218,9 +228,10 @@ def main():
         restored = masker.restore(output)
         residue = masker.check_residue(restored)
         if residue:
-            print("[警告] 输出残留未还原令牌：%s" % residue, file=sys.stderr)
+            print("[warn] un-restored tokens remain in the output: %s" % residue,
+                  file=sys.stderr)
         final = restored
-        print("[校验] 未发现真实值泄露，已还原 %d 个字段" % len(masker.mapping))
+        print("[check] no real value leaked; restored %d field(s)" % len(masker.mapping))
     else:
         final = output
 
@@ -229,7 +240,7 @@ def main():
            "masked_fields": masker.masked_stats()["fields"] if masker else 0,
            "cost_ms": cost_ms})
 
-    print("\n===== 模型回答（已本地还原）=====")
+    print("\n===== Model answer (restored locally) =====")
     print(final)
 
 

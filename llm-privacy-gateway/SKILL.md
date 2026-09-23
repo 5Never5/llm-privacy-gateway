@@ -1,120 +1,119 @@
 ---
 name: llm-privacy-gateway
-description: 隐私保护大模型网关：在把内容发给第三方模型（官方 API 或不可信中转站）之前，本地完成核心机密文件加密存储、文件/图片文字本地提取、敏感字段脱敏（令牌化），结果返回后本地还原并做泄露校验，全程审计。零本地算力要求——无需部署本地模型，脱敏/提取/加密全部在本机 CPU 上瞬时完成，推理由云端或中转站承担。适用于以下场景：(1) 用户要用第三方/中转模型服务但担心真实数据泄露；(2) 需要处理含个人信息、企业机密、合同金额、手机号身份证等敏感字段的文本或文件（PDF/Word/Excel/图片）；(3) 需要"真实敏感数据不出域、窃取亦不可还原"的合规诉求。触发词：脱敏、防泄露、中转站、隐私网关、令牌化、数据不出域、敏感信息保护。
+description: Privacy-preserving LLM gateway. Before content is sent to any third-party model (official API or untrusted relay) it encrypts core-secret files locally, extracts text from files and images locally, masks (tokenizes) sensitive fields, then restores and leak-checks the response locally, with a full audit trail. Zero local compute — no local model or GPU required; masking, extraction and encryption all run instantly on the local CPU while inference stays with the cloud or the relay. Use when (1) the user wants to use a third-party or relayed model service but is worried about real data leaking; (2) the content involves personal information, company secrets, contract amounts, mobile numbers, ID numbers or other sensitive fields in text or files (PDF/Word/Excel/images); (3) there is a compliance requirement that real sensitive data must not leave the boundary and must be unrecoverable even if intercepted. Trigger words: masking, de-identification, anti-leak, relay, privacy gateway, tokenization, data boundary, PII protection.
 ---
 
-# Llm Privacy Gateway
+# LLM Privacy Gateway
 
-在发送给第三方模型前，把真实敏感数据留在本地：脱敏（令牌化）→ 发送脱敏文本 → 本地还原 + 校验 + 审计。**真实内容（含文件、图片本体）永不跨越本机边界。**
+Keep real sensitive data local before anything is sent to a third-party model: mask (tokenize) → send masked text → restore locally + verify + audit. **Real content (including file and image bodies) never crosses the machine boundary.**
 
-## 核心安全边界
+## Core security boundary
 
-- **零本地算力**：本 Skill 不要求部署本地模型/GPU。脱敏、文字提取、加密、还原全部在本机 CPU 上轻量完成，推理完全由云端或中转站承担；
-- 文件/图片：先用 `local_extract.py` 在本地提取文字，**本体永不上传**；
-- 文本：`masker.py` 把敏感字段替换为会话级随机令牌（映射表只留本地），只有脱敏文本出域；
-- 端点（官方 API、中转站）一律视为不可信通道，只接收脱敏文本；
-- 核心商业机密：默认用 `crypto_store.py` 加密存储、**不送任何模型**；确需分析时先脱敏发送（接受残余风险）；
-- 审计：每次请求写入 `~/.llm-privacy-gate/audit.jsonl`。
+- **Zero local compute**: this skill does not require a local model or GPU. Masking, text extraction, encryption and restoration all run lightly on the local CPU; inference is handled entirely by the cloud or a relay;
+- Files/images: text is extracted locally by `local_extract.py` first, and **the body is never uploaded**;
+- Text: `masker.py` replaces sensitive fields with session-level random tokens (the mapping table stays local), so only masked text leaves the boundary;
+- Every endpoint (official API, relay) is treated as an untrusted channel that receives masked text only;
+- Core business secrets: encrypted at rest by `crypto_store.py` by default and **sent to no model at all**; if analysis is genuinely required, mask first and accept the residual risk;
+- Audit: every request is appended to `~/.llm-privacy-gate/audit.jsonl`.
 
-## 跨智能体工具使用（不是独立软件，是一个 Skill）
+## Cross-agent usage (this is a Skill, not standalone software)
 
-本技能是标准**技能文件夹**（`SKILL.md` + `scripts/` + `references/`），采用 Agent Skills 开放标准，
-可原样加载到以下工具（把整个 `llm-privacy-gateway` 文件夹复制到对应工具的 skills 目录即可）：
+This skill is a standard **skill folder** (`SKILL.md` + `scripts/` + `references/`) following the Agent Skills open standard. Copy the whole `llm-privacy-gateway` folder into the skills directory of any tool below and it loads as-is:
 
-| 工具 | 放置位置 |
+| Tool | Location |
 | --- | --- |
-| 豆包工作 | `workspace/.user_skills/`（已就位） |
-| OpenAI Codex | `~/.codex/skills/` 或项目 `.codex/skills/` |
-| DeepSeek Harness | 项目 `.dsh/skills/`（原生兼容 Skills 规范） |
+| Doubao Work | `workspace/.user_skills/` |
+| OpenAI Codex | `~/.codex/skills/` or project `.codex/skills/` |
+| DeepSeek Harness | project `.dsh/skills/` (natively compatible with the Skills spec) |
 | OpenClaw | `~/.openclaw/skills/` |
 | WorkBuddy | `.codebuddy/skills/` |
-| Claude 系 / 其他兼容 Agent Skills 标准工具 | 按各自 skills 目录约定 |
+| Claude family / other Agent Skills compatible tools | follow that tool's skills directory convention |
 
-使用方式不变：**对 Agent 说一句话**（如"用隐私网关处理这个合同"），Agent 读取本技能并调用 `scripts/` 执行；
-用户界面由各平台提供，本技能不需要也不提供 GUI。
-每个新环境首次使用前：`python scripts/setup_deps.py` 补齐依赖（见下）。
+Usage is unchanged: **tell the agent what you want in one sentence** (e.g. "run this contract through the privacy gateway"). The agent reads this skill and invokes the scripts in `scripts/`; the UI is provided by each platform — this skill ships no GUI and needs none.
+In every new environment, run `python scripts/setup_deps.py` once before first use (see below).
 
-## 快速开始
+## Quick start
 
 ```bash
-# 0) 新环境首次使用：检查/安装依赖（跨平台）
-python scripts/setup_deps.py --check      # 只检查
-python scripts/setup_deps.py              # 安装缺失依赖
-python scripts/setup_deps.py --install-ocr  # 需要图片 OCR 时
+# 0) First run in a new environment: check / install dependencies (cross-platform)
+python scripts/setup_deps.py --check         # check only
+python scripts/setup_deps.py                 # install whatever is missing
+python scripts/setup_deps.py --install-ocr   # when image OCR is needed
 
-# 1) 脱敏 + 干跑（不发送）：查看将出域的内容
-python scripts/gateway.py --text "张三的手机 13800138000，金额 5000 元" --dry-run
+# 1) Mask + dry run (nothing is sent): inspect exactly what would leave
+python scripts/gateway.py --text "Invoice for Acme Corp: card 4111111111111111, total 5,000 USD" --dry-run
 
-# 2) 配置端点（复制 references/config.example.json 到 ~/.llm-privacy-gate/config.json 修改）
-#    中转站示例已预置（name=relay），填入 base_url；API Key 走环境变量，勿写入配置文件
+# 2) Configure endpoints (copy references/config.example.json to ~/.llm-privacy-gate/config.json and edit)
+#    A relay example is pre-wired (name=relay) — fill in base_url. API keys go in env vars, never in this file
 
-# 3) 真实发送（走中转站；环境变量 PowerShell 用 $env:RELAY_API_KEY=..., Bash 用 export RELAY_API_KEY=...）
+# 3) Real request through a relay (env var: $env:RELAY_API_KEY=... in PowerShell, export RELAY_API_KEY=... in Bash)
 set RELAY_API_KEY=sk-xxx
-python scripts/gateway.py --text "分析这份报价单：李四，报价 12000 元" --endpoint relay
+python scripts/gateway.py --text "Summarise this quote: Jane Doe, quoted 12,000 USD" --endpoint relay
 
-# 4) 处理文件（本地提取文字，本体不出域；路径按本机实际调整）
-python scripts/gateway.py --file ./合同/报价单.pdf --endpoint relay
+# 4) Process a file (text extracted locally, body never leaves; adjust the path for your machine)
+python scripts/gateway.py --file ./contracts/quote.pdf --endpoint relay
 
-# 5) （可选）本机装有 Ollama 时，核心机密可强制本地推理
-python scripts/gateway.py --file ./机密/规划.docx --local
+# 5) (Optional) force local inference for core secrets when Ollama is installed
+python scripts/gateway.py --file ./confidential/roadmap.docx --local
 
-# 6) 文件加密存储（核心商业机密）
-python scripts/crypto_store.py encrypt --in 机密.docx --out 机密.docx.enc
-python scripts/crypto_store.py decrypt --in 机密.docx.enc --out 机密.docx
+# 6) Encrypted storage for core secrets
+python scripts/crypto_store.py encrypt --in roadmap.docx --out roadmap.docx.enc
+python scripts/crypto_store.py decrypt --in roadmap.docx.enc --out roadmap.docx
 
-# 7) 严格模式：命中企业词典的核心机密 → 拒绝发送（仅审计）
-python scripts/gateway.py --file ./机密/规划.docx --endpoint relay --strict
+# 7) Strict mode: a hit on the enterprise dictionary refuses the request outbound (audit only)
+python scripts/gateway.py --file ./confidential/roadmap.docx --endpoint relay --strict
 ```
 
-> 配置自动加载顺序：`--config` 指定 > 环境变量 `LPG_CONFIG` > `~/.llm-privacy-gate/config.json` > 内置示例。
-> 复制 `references/config.example.json` 到 `~/.llm-privacy-gate/config.json` 修改即可，无需每次带 `--config`。
+> Config auto-load order: `--config` > env var `LPG_CONFIG` > `~/.llm-privacy-gate/config.json` > built-in example.
+> Copy `references/config.example.json` to `~/.llm-privacy-gate/config.json` and edit it once — no `--config` needed afterwards.
 
-## 批量处理文件夹（由 Agent 循环，脚本保持单文件职责）
+## Batch-processing a folder (the agent loops; the scripts keep a single-file responsibility)
 
-当用户要求"处理整个文件夹/目录"时，**不要给脚本加批量参数**——由 Agent 按以下工作流执行循环：
+When the user asks to "process this whole folder / directory", **do not add a batch flag to the scripts** — have the agent loop instead:
 
-1. 枚举目录内支持的文件（txt/md/csv/json/pdf/docx/xlsx/常见图片；跳过 `.enc` 加密文件）；
-2. 逐个调用 `python scripts/gateway.py --file <路径> [--endpoint <名>] [--strict]`；
-3. 每个文件的结果独立输出；失败文件单独列出原因（提取失败 / 泄露拦截 exit 3 / 严格拦截 exit 4）；
-4. 结束后汇总：成功数 / 失败数 / 出域请求数 / 审计条目数（`~/.llm-privacy-gate/audit.jsonl` 每文件一条）；
-5. 泄露拦截或严格拦截的文件必须醒目提示，不得静默跳过。
+1. Enumerate the supported files in the directory (txt/md/csv/json/pdf/docx/xlsx/common images; skip `.enc` ciphertext);
+2. Call `python scripts/gateway.py --file <path> [--endpoint <name>] [--strict]` once per file;
+3. Report each file's result independently and list failures with their reason (extraction failure / leak blocked, exit 3 / strict blocked, exit 4);
+4. Finish with a summary: succeeded / failed / outbound requests / audit entries (`~/.llm-privacy-gate/audit.jsonl`, one entry per file);
+5. Files blocked by leak-check or strict mode must be surfaced prominently and never skipped silently.
 
-## 模块说明
+## Modules
 
-### 1. 脱敏 `scripts/masker.py`
-- 内置规则：身份证 / 手机号 / 座机 / 邮箱 / 银行卡 / IP / 金额；
-- 自定义词典：`~/.llm-privacy-gate/custom_words.json`（公司名、人名、项目代号必须在此配置）；
-- 会话级随机令牌 `{PHONE-xxxx-N}`，防跨会话关联；
-- CLI：`mask` / `restore` / `check-leak` 三个子命令，供单独调试。
+### 1. Masking — `scripts/masker.py`
+- Built-in rules: ID number / mobile / landline / email / bank card / IP / amount;
+- Custom dictionary: `~/.llm-privacy-gate/custom_words.json` (company names, people, project codenames must be listed here);
+- Session-level random tokens `{PHONE-xxxx-N}` to prevent cross-session correlation;
+- CLI: the `mask` / `restore` / `check-leak` subcommands, for standalone debugging.
 
-### 2. 本地提取 `scripts/local_extract.py`
-- 支持：txt/md/csv/json、PDF、Word(.docx)、Excel(.xlsx)、常见图片(OCR)；
-- OCR 未安装时给出明确安装指引（推荐 `pip install paddleocr paddlepaddle`）；
-- 只输出文本，文件本体不出域。
+### 2. Local extraction — `scripts/local_extract.py`
+- Supported: txt/md/csv/json, PDF, Word (.docx), Excel (.xlsx), common images (OCR);
+- `--ocr-lang` selects the OCR language set (default `en`; use `ch` for Chinese, or e.g. `en+ch` for mixed pages);
+- When no OCR engine is installed it prints clear install guidance;
+- Text only — the file body never leaves.
 
-### 3. 加密存储 `scripts/crypto_store.py`
-- AES-256-GCM，密钥自动生成于 `~/.llm-privacy-gate/key.bin`（首用生成，请备份）；
-- 密文文件可放心存放/传输，无密钥不可解密。
+### 3. Encrypted storage — `scripts/crypto_store.py`
+- AES-256-GCM; the key is generated at `~/.llm-privacy-gate/key.bin` (created on first use — please back it up);
+- Ciphertext files are safe to store or transfer; without the key they cannot be decrypted.
 
-### 4. 网关 `scripts/gateway.py`
-- 管线：输入 → 本地提取 → 脱敏 → 发送 → 还原 + 泄露校验 → 审计；
-- 泄露校验：模型输出若出现已脱敏的真实值，**阻止展示并记录审计**；
-- `--strict`：输入命中企业词典（核心机密）时**拒绝出域**，仅记录审计（exit 4）；
-- `--dry-run` 预览将发送的脱敏载荷，不发真实请求。
+### 4. Gateway — `scripts/gateway.py`
+- Pipeline: input → local extraction → masking → send → restore + leak check → audit;
+- Leak check: if the model output contains a real value that was masked, display is **blocked** and the event is audited;
+- `--strict`: refuses to send when the input hits the enterprise dictionary (core secrets); audit only (exit 4);
+- `--dry-run`: preview the masked payload that would be sent, without sending it.
 
-### 5. 依赖管理 `scripts/setup_deps.py`
-- 新环境（Codex/DeepSeek Harness 等）首次运行前执行，自动检查/安装：cryptography、pypdf、python-docx、openpyxl、Pillow；
-- `--check` 只检查；`--install-ocr` 额外装 OCR；OCR 缺失不影响文本/PDF/Word/Excel 处理。
+### 5. Dependency management — `scripts/setup_deps.py`
+- Run once in a new environment (Codex / DeepSeek Harness etc.); checks and installs cryptography, pypdf, python-docx, openpyxl and Pillow;
+- `--check` checks only; `--install-ocr` additionally installs OCR; a missing OCR engine does not affect text/PDF/Word/Excel handling.
 
-## 配置
+## Configuration
 
-见 `references/config.example.json` 与 `references/rules.md`（规则清单、安全边界、审计格式）。
-配置优先级：`--config` 指定 > 环境变量 `LPG_CONFIG` > `~/.llm-privacy-gate/config.json` > 内置示例。
-API Key 一律通过环境变量注入（如 `OPENAI_API_KEY`、`RELAY_API_KEY`），禁止写入配置文件。
+See `references/config.example.json` and `references/rules.md` (rule list, security boundary, audit format).
+Priority: `--config` > env var `LPG_CONFIG` > `~/.llm-privacy-gate/config.json` > built-in example.
+API keys are always injected through env vars (e.g. `OPENAI_API_KEY`, `RELAY_API_KEY`) and must never be written into the config file.
 
-## 使用边界（务必先读 references/rules.md）
+## Operating limits (read `references/rules.md` first)
 
-- 脱敏只保护命中规则的内容；未命中的业务上下文仍会出域；
-- 模型返回的"分析结论"对端点可见；
-- 绝对意义上"模型完全理解 + 服务商无法解密"不可兼得；本网关实现"真实敏感数据不可获取、窃取不可还原"；
-- 高危内容（核心商业机密）优先 `--local` 或加密存储，不出域。
+- Masking protects only rule-matched content; unmatched business context still leaves the boundary;
+- Anything the model returns is visible to the endpoint;
+- "Model fully understands + provider cannot decrypt" is not achievable in the absolute; this gateway delivers "real sensitive data unobtainable, theft unreconstructable";
+- For high-risk content (core business secrets), prefer `--local` or encrypted storage so it never leaves at all.

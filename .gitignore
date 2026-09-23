@@ -4,5 +4,5 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 
-# 运行时产物（本仓库不含密钥/审计，它们位于用户主目录 ~/.llm-privacy-gate/）
+# Runtime artifacts — keys and audit logs live in ~/.llm-privacy-gate/, never in this repo
 *.enc

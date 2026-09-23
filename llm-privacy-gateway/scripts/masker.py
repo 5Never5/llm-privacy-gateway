@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-llm-privacy-gateway · 脱敏模块 (masker.py)
+llm-privacy-gateway - masking module (masker.py)
 
-在本地完成敏感字段识别与令牌化替换，保证真实数据不出域：
-  - 内置正则规则库：身份证、手机号、座机、邮箱、银行卡、IP、金额
-  - 自定义词典：公司名、人名、项目代号等（~/.llm-privacy-gate/custom_words.json）
-  - 会话级随机令牌：每次运行生成随机会话后缀，防止跨会话关联分析
-  - 映射表只保存在本地，还原与泄露校验均在本地完成
+Detects and tokenizes sensitive fields locally so that real values never leave
+the machine boundary:
+  - Built-in regex rules: ID number, mobile, landline, email, bank card, IP, amount
+  - Custom dictionary: company names, people, project codenames
+    (~/.llm-privacy-gate/custom_words.json)
+  - Session-level random tokens: a fresh session suffix per run prevents
+    cross-session correlation analysis
+  - The mapping table is kept locally only; restore and leak checks run locally
 
-用法:
+Usage:
   python masker.py mask --text "..." [--out-mapping map.json]
   python masker.py mask --file input.txt [--out-mapping map.json]
   python masker.py restore --text "..." --mapping map.json
-  python masker.py check-leak --output "模型返回原文" --mapping map.json
+  python masker.py check-leak --output "model output" --mapping map.json
 """
 import argparse
 import json
@@ -26,22 +29,36 @@ import sys
 HOME_DIR = os.path.join(os.path.expanduser("~"), ".llm-privacy-gate")
 CUSTOM_WORDS_FILE = os.path.join(HOME_DIR, "custom_words.json")
 
-# 内置规则：(类型, 正则)。类型名即令牌前缀。
+# Currency codes accepted AFTER an amount. The word forms are matched
+# case-insensitively. The last two alternatives are the yuan (U+5143) and
+# renminbi (U+4EBA U+6C11 U+5E01) markers, written as escapes so that this
+# source file stays ASCII-only.
+_CUR_CODES = (r"(?i:RMB|CNY|USD|EUR|GBP|JPY|HKD|SGD|AUD|CAD|CHF|YUAN|RENMINBI)"
+              r"|\u5143|\u4eba\u6c11\u5e01")
+# Currency signs accepted BEFORE an amount (U+0024 U+20AC U+00A3 U+00A5 U+FFE5)
+_CUR_SIGNS = "$\u20ac\u00a3\u00a5\uffe5"
+# A numeric literal: optional thousands separators (comma, space, nbsp),
+# optional 1-2 decimals
+_NUM = r"(?:\d{1,3}(?:[,\u00a0 ]\d{3})*|\d+)(?:\.\d{1,2})?"
+
+# Built-in rules: (type, regex). The type name is the token prefix.
 BUILTIN_RULES = [
-    ("ID_CARD", r"(?<!\d)\d{17}[\dXx](?!\d)"),          # 18 位身份证
-    ("PHONE",   r"(?<!\d)1[3-9]\d{9}(?!\d)"),           # 大陆手机号
-    ("TEL",     r"(?<!\d)0\d{2,3}-?\d{7,8}(?!\d)"),     # 座机
+    ("ID_CARD", r"(?<!\d)\d{17}[\dXx](?!\d)"),          # 18-digit ID number
+    ("PHONE",   r"(?<!\d)1[3-9]\d{9}(?!\d)"),           # 11-digit mobile number
+    ("TEL",     r"(?<!\d)0\d{2,3}-?\d{7,8}(?!\d)"),     # landline number
     ("EMAIL",   r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}"),
-    ("BANKCARD", r"(?<!\d)\d{16,19}(?!\d)"),            # 银行卡/卡号段
+    ("BANKCARD", r"(?<!\d)\d{16,19}(?!\d)"),            # bank card / account run
     ("IP",      r"(?<!\d)(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)"
                 r"(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}(?!\d)"),
-    ("AMOUNT",  r"(?<![\d.])(?:\d{1,3}(?:,\d{3})*|\d+)(?:\.\d{1,2})?"
-                r"(?=\s*(?:元|人民币|RMB|￥|¥))"),
+    # AMOUNT matches a currency code after the figure, or a currency sign
+    # before it (e.g. "5,000 USD", "12000 RMB", "$5,000", "250 000 EUR").
+    ("AMOUNT",  r"(?:(?<![\d.])" + _NUM + r"(?=\s*(?:" + _CUR_CODES + r"))"
+                r"|(?<![\d.])[" + _CUR_SIGNS + r"]\s*" + _NUM + r"(?![\d.]))"),
 ]
 
 
 def _load_custom_words():
-    """读取自定义词典：{"words": ["公司甲", "张三", "项目代号X"]}"""
+    """Read the custom dictionary: {"words": ["Acme Corporation", "John Smith"]}"""
     try:
         with open(CUSTOM_WORDS_FILE, "r", encoding="utf-8-sig") as f:
             data = json.load(f)
@@ -53,7 +70,8 @@ def _load_custom_words():
 
 class Masker:
     def __init__(self, enabled_types=None, session_id=None, custom_words=None):
-        # 会话后缀：同一字段在不同会话产生不同令牌，防止跨会话关联
+        # Session suffix: the same field yields different tokens in different
+        # sessions, which prevents cross-session correlation.
         self.session_id = session_id or "".join(
             random.choices(string.ascii_lowercase + string.digits, k=4))
         enabled = set(enabled_types) if enabled_types else set()
@@ -67,7 +85,7 @@ class Masker:
             self.custom_pattern = re.compile(joined)
         else:
             self.custom_pattern = None
-        self.mapping = {}      # token -> 原始值
+        self.mapping = {}      # token -> original value
         self.counter = 0
 
     def _token(self, typ):
@@ -98,7 +116,7 @@ class Masker:
         return out
 
     def check_leak(self, raw_output):
-        """在还原前调用：检查模型原始输出是否泄露了真实值"""
+        """Call before restoring: does the raw model output expose real values?"""
         leaks = []
         for token, value in self.mapping.items():
             if value and value in raw_output:
@@ -106,7 +124,7 @@ class Masker:
         return leaks
 
     def check_residue(self, restored):
-        """在还原后调用：检查输出是否残留未还原的令牌"""
+        """Call after restoring: are any un-restored tokens left in the output?"""
         return [t for t in self.mapping if t in restored]
 
     def masked_stats(self):
@@ -123,21 +141,21 @@ def _read_input(text, path):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="llm-privacy-gateway 脱敏模块")
+    ap = argparse.ArgumentParser(description="llm-privacy-gateway masking module")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    p_mask = sub.add_parser("mask", help="脱敏（令牌化）")
+    p_mask = sub.add_parser("mask", help="mask (tokenize) sensitive fields")
     p_mask.add_argument("--text", default=None)
     p_mask.add_argument("--file", default=None)
     p_mask.add_argument("--out-mapping", default=None)
     p_mask.add_argument("--session", default=None)
 
-    p_res = sub.add_parser("restore", help="还原")
+    p_res = sub.add_parser("restore", help="restore tokens back to real values")
     p_res.add_argument("--text", default=None)
     p_res.add_argument("--file", default=None)
     p_res.add_argument("--mapping", required=True)
 
-    p_leak = sub.add_parser("check-leak", help="泄露校验")
+    p_leak = sub.add_parser("check-leak", help="check an output for leaked values")
     p_leak.add_argument("--output", required=True)
     p_leak.add_argument("--mapping", required=True)
 
@@ -172,7 +190,8 @@ def main():
         residue = m.check_residue(restored)
         print(restored)
         if residue:
-            print("警告：以下令牌未还原 → %s" % residue, file=sys.stderr)
+            print("Warning: these tokens were not restored -> %s" % residue,
+                  file=sys.stderr)
 
     elif args.cmd == "check-leak":
         with open(args.mapping, "r", encoding="utf-8") as f:
@@ -181,11 +200,11 @@ def main():
         m.mapping = data.get("mapping", {})
         leaks = m.check_leak(args.output)
         if leaks:
-            print("泄露！模型输出中出现真实值：")
+            print("LEAK: real values found in the model output:")
             for item in leaks:
                 print("  %s -> %s" % (item["token"], item["value"]))
             sys.exit(2)
-        print("校验通过：模型输出中未发现已脱敏的真实值。")
+        print("Check passed: no masked real values found in the model output.")
 
 
 if __name__ == "__main__":
