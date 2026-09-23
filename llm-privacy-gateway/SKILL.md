@@ -26,6 +26,8 @@ description: 隐私保护大模型网关：在把内容发给第三方模型（�
 | 豆包工作 | `workspace/.user_skills/`（已就位） |
 | OpenAI Codex | `~/.codex/skills/` 或项目 `.codex/skills/` |
 | DeepSeek Harness | 项目 `.dsh/skills/`（原生兼容 Skills 规范） |
+| OpenClaw | `~/.openclaw/skills/` |
+| WorkBuddy | `.codebuddy/skills/` |
 | Claude 系 / 其他兼容 Agent Skills 标准工具 | 按各自 skills 目录约定 |
 
 使用方式不变：**对 Agent 说一句话**（如"用隐私网关处理这个合同"），Agent 读取本技能并调用 `scripts/` 执行；
