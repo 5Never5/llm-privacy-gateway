@@ -1,0 +1,8 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# 运行时产物（本仓库不含密钥/审计，它们位于用户主目录 ~/.llm-privacy-gate/）
+*.enc

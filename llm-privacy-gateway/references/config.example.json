@@ -1,0 +1,28 @@
+{
+  "_说明": "复制本文件到 ~/.llm-privacy-gate/config.json 后按需修改，或直接编辑本文件。API Key 一律从环境变量读取，禁止写入本文件。",
+  "endpoints": [
+    {
+      "name": "official",
+      "kind": "官方直连",
+      "base_url": "https://api.openai.com/v1",
+      "api_key_env": "OPENAI_API_KEY",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "name": "relay",
+      "kind": "中转站(不可信通道)",
+      "base_url": "https://your-relay.example.com/v1",
+      "api_key_env": "RELAY_API_KEY",
+      "model": "gpt-4o-mini"
+    }
+  ],
+  "local": {
+    "kind": "本地模型(Ollama，可选——本 Skill 不要求部署)",
+    "base_url": "http://localhost:11434/v1",
+    "model": "qwen2.5:7b"
+  },
+  "mask": {
+    "enabled_types": ["ID_CARD", "PHONE", "TEL", "EMAIL", "BANKCARD", "IP", "AMOUNT"],
+    "custom_words_file": "~/.llm-privacy-gate/custom_words.json"
+  }
+}
