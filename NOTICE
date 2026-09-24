@@ -1,0 +1,30 @@
+LLM Privacy Gateway
+Copyright 2026 5Never5 (https://github.com/5Never5)
+
+This product is licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full terms.
+
+The skill folder `llm-privacy-gateway/` is normally installed on its own,
+which means this file and LICENSE do not travel with it automatically. If you
+are passing a copy on, carry the copyright line above with it: everywhere the
+skill is redistributed, that attribution has to be reproduced.
+
+Third-party components
+----------------------
+Nothing from another project is vendored into this repository. The scripts are
+original work and read only the Python standard library, plus the runtime
+dependencies below. They are not bundled here; each user installs them with
+`python scripts/setup_deps.py`, and each remains under its own licence and its
+own copyright:
+
+    cryptography, pypdf, python-docx, openpyxl, Pillow
+    pytesseract / paddleocr and the Tesseract or PaddleOCR engine (optional, OCR only)
+
+See THIRD-PARTY-NOTICES.md for the licence of each one and where to find it.
+
+Trademarks
+----------
+Agent Skills is the name of an open standard. Doubao Work, OpenAI Codex,
+DeepSeek Harness, OpenClaw, WorkBuddy, Claude and PaddleOCR are the marks of
+their respective owners. They appear here only to say which tools this skill
+runs in, and that use implies no affiliation and no endorsement.

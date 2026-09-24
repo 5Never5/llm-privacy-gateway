@@ -12,8 +12,8 @@
   <a href="#-安装"><img src="https://img.shields.io/badge/Cross--Agent-Codex%20%7C%20DSH%20%7C%20OpenClaw%20%7C%20WorkBuddy%20%7C%20Claude%20%7C%20Doubao-0e83cd" alt="跨智能体工具" /></a>
   <a href="#-安全模型"><img src="https://img.shields.io/badge/Encryption-AES--256--GCM-critical" alt="AES-256-GCM" /></a>
   <a href="#-工作原理"><img src="https://img.shields.io/badge/Zero%20Local%20Compute-CPU%20Only-success" alt="零本地算力" /></a>
-  <a href="../../LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-F5A623" alt="PolyForm 非商业许可证 1.0.0" /></a>
-  <a href="COMMERCIAL.zh-CN.md"><img src="https://img.shields.io/badge/Commercial%20use-licence%20required-4B5563" alt="商业用途需取得授权" /></a>
+  <a href="../../LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-007EC6" alt="Apache 许可证 2.0" /></a>
+  <a href="../../THIRD-PARTY-NOTICES.md"><img src="https://img.shields.io/badge/third--party_notices-2DD4BF" alt="已列出第三方声明" /></a>
 </p>
 
 <p align="center">
@@ -89,7 +89,7 @@ python scripts/gateway.py --file ./confidential/roadmap.docx --endpoint relay --
 python scripts/setup_deps.py
 ```
 
-> **要在公司里用？** 个人、教育、科研、慈善与政府用途免费，无需授权。但公司把它用于自身业务 —— 哪怕只是用来脱敏自家合同 —— 属于商业用途，需要取得商业授权。详见 [商业用途](COMMERCIAL.zh-CN.md)：一次性费用，软件本身不会有任何差别。
+> **要在公司里用？** 没有什么需要买的。Apache 2.0 本身就覆盖商业用途，没有付费档位，也没有授权需要申请。许可证唯一要求的是署名：转发任何副本时，请把 [NOTICE](../../NOTICE) 与 [THIRD-PARTY-NOTICES.md](../../THIRD-PARTY-NOTICES.md) 一并保留。
 
 ## ⚙️ 配置
 
@@ -107,17 +107,14 @@ python scripts/setup_deps.py
 
 ## ☕ 支持
 
-业余项目，背后没有公司，没有广告，没有遥测，也没有任何功能被锁在价格后面。个人与非商业用途依据许可证免费，并且一直免费；唯一收费的是商业使用许可，这是有意为之。
+业余项目，背后没有公司，没有广告，没有遥测，也没有任何功能被锁在价格后面。许可证是 Apache 2.0，在公司里用也不花一分钱，没有任何授权需要购买。
 
-所以这里不是付费墙，只是一个随喜的钱箱。不过可以算一笔账：那些本该手动脱敏的下午，是它替你省下来的；那些以前不敢交给 API 的客户文件，现在可以直接给。既然真省下过时间，回赠一点，就是让下一个“省下来的下午”继续发生 —— 每一笔打赏都会变成实打实投在这个项目上的时间，而这些时间没有别的来源。
-
-**如果是在公司里用，请别打赏，直接买授权** —— 在同一页，而且那才是真正支撑下一个版本的东西。
+这个项目真正缺的是时间，而这一页上唯一能买到时间的只有打赏。可以算一笔账：那些本该手动脱敏的下午，是它替你省下来的；那些以前不敢交给 API 的客户文件，现在可以直接给。既然真省下过时间，回赠一点，就是让下一个“省下来的下午”继续发生 —— 每一笔打赏都会变成实打实投在这个项目上的时间，而这些时间没有别的来源。
 
 - ⭐ **给项目点个 Star** —— 不花钱，而且真正能让项目被更多人看到
 - 🐛 **提一个 Bug** —— 说实话，比打赏更有价值
 - 📣 **转给一个需要它的人** —— 零成本，而且能精准触达
 - ☕ **打赏** —— 最直接地为这个项目争取更多时间
-- 🧾 **购买商业授权** —— 如果受益的是公司
 
 <p align="center">
   <a href="SUPPORT.zh-CN.md"><b>☕ 打赏方式 · 收款码见此</b></a>
@@ -127,20 +124,22 @@ python scripts/setup_deps.py
 
 ## 📄 许可证
 
-本项目采用 [PolyForm 非商业许可证 1.0.0](../../LICENSE) 发布 —— 个人、教育、科研、慈善与政府用途免费。**商业用途需要取得授权**，[商业用途](../../docs/COMMERCIAL.md)说明了授权范围与申请方式（中文版见[这里](COMMERCIAL.zh-CN.md)）。
+[Apache 许可证 2.0 版](../../LICENSE) —— 可以使用、修改、再分发，包括用于商业用途与闭源项目。没有付费档位，没有需要申请的授权，也没有任何被扣下的功能。
 
-实操上的分界：在公司里用它做公司的事，或者把它打包进你要卖的东西里，都算商业用途；其余情况一律免费，并且一直免费。
+它唯一要求的回报是署名。转发任何副本时请保留 [NOTICE](../../NOTICE) 文件。如果你单独分发技能文件夹 —— 而技能通常就是这么安装的 —— 那么 `llm-privacy-gateway/LICENSE` 与 `llm-privacy-gateway/NOTICE` 就在文件夹里面：一个被复制进别人 skills 目录的文件夹，不会把仓库根目录一起带过去。
 
-这份许可证不锁任何东西 —— 不锁功能、不锁规则、不锁内容。它管的是**谁可以把它用于商业目的**，不是软件能做什么。买商业授权买的是许可，不是能力。
+**第三方组件。** 这里没有从别的项目拷来的代码，但脚本会调用你自己安装的那些库：`cryptography`、`pypdf`、`python-docx`、`openpyxl`、`Pillow`，以及可选的 `pytesseract` 或 `paddleocr`。它们各自遵循自己的许可证与版权。[THIRD-PARTY-NOTICES.md](../../THIRD-PARTY-NOTICES.md) 逐一列出它们、各自的用途，以及它们的许可证对你有什么要求 —— 把它打包进产品之前值得读一遍。
 
-本次换证之前发布的版本采用 MIT 许可证，**那份授权无法撤回**：任何在 MIT 期间取得副本的人，就那份副本永久保有当时授予的权利。只有本次变更之后的版本才适用 PolyForm 非商业许可证。
+本次变更之前发布的版本曾采用 MIT 许可证，并短暂采用过非商业许可证。那两份授权对当时已取得的每一份副本都继续有效，且无法撤回。本次及之后的版本采用 Apache 2.0。
 
 ## 🌐 语言版本
 
-| 语言 | README | 技能说明 | 规则 | 使用场景 | 打赏 | 商业授权 |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| English | [README](../../README.md) | [Skill](../../llm-privacy-gateway/SKILL.md) | [Rules](../../llm-privacy-gateway/references/rules.md) | [Use cases](../use-cases.md) | [Support](../SUPPORT.md) | [Commercial](../COMMERCIAL.md) |
-| 简体中文 | 本页 | [技能说明](SKILL.zh-CN.md) | [规则](RULES.zh-CN.md) | [使用场景](use-cases.zh-CN.md) | [打赏](SUPPORT.zh-CN.md) | [商业授权](COMMERCIAL.zh-CN.md) |
+| 语言 | README | 技能说明 | 规则 | 使用场景 | 打赏 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| English | [README](../../README.md) | [Skill](../../llm-privacy-gateway/SKILL.md) | [Rules](../../llm-privacy-gateway/references/rules.md) | [Use cases](../use-cases.md) | [Support](../SUPPORT.md) |
+| 简体中文 | 本页 | [技能说明](SKILL.zh-CN.md) | [规则](RULES.zh-CN.md) | [使用场景](use-cases.zh-CN.md) | [打赏](SUPPORT.zh-CN.md) |
+
+`NOTICE` 与 `THIRD-PARTY-NOTICES.md` 只有英文，这是有意的：它们是要随副本一起流传的署名文件，而一份被翻译过的声明，很容易让接收者读到的内容与许可证实际写的条款出现偏差。
 
 ---
 

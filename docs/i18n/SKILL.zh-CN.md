@@ -125,14 +125,17 @@ API Key 一律通过环境变量注入（如 `OPENAI_API_KEY`、`RELAY_API_KEY`�
 
 ## 许可证
 
-PolyForm 非商业许可证 1.0.0 —— 个人、教育、科研、慈善与政府用途免费。**商业用途需要取得授权**：见仓库中的 `docs/COMMERCIAL.md`（中文版 `docs/i18n/COMMERCIAL.zh-CN.md`）。
+Apache 许可证 2.0 版 —— 可以使用、修改、再分发，包括用于商业用途。完整正文见本文件夹内的 `LICENSE`。
 
-这个文件夹通常是单独安装的，所以条款必须跟着它走。许可证网址与下面这行声明都是条款的一部分，转发任何副本时都必须保留：
+这个文件夹通常是单独安装的，所以条款必须跟着它走。请把 `LICENSE` 与 `NOTICE` 与本文件放在一起，并在转发任何副本时保留下面三行（英文原文，照抄即可）：
 
 ```
-Required Notice: Copyright 5Never5 (https://github.com/5Never5)
-https://polyformproject.org/licenses/noncommercial/1.0.0
+LLM Privacy Gateway — Copyright 2026 5Never5 (https://github.com/5Never5)
+Licensed under the Apache License, Version 2.0
+https://www.apache.org/licenses/LICENSE-2.0
 ```
+
+这里不包含任何第三方源码：脚本为原创，只引用 Python 标准库。安装后调用的那些库 —— cryptography、pypdf、python-docx、openpyxl、Pillow，以及可选的 pytesseract 或 paddleocr —— 各自遵循自己的许可证，仓库中的 `THIRD-PARTY-NOTICES.md` 逐一记录。
 
 ---
 

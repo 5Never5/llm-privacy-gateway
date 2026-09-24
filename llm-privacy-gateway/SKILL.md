@@ -120,11 +120,14 @@ API keys are always injected through env vars (e.g. `OPENAI_API_KEY`, `RELAY_API
 
 ## Licence
 
-PolyForm Noncommercial License 1.0.0 — free for personal, educational, research, charitable and government use. **Commercial use requires a licence**: see `docs/COMMERCIAL.md` in the repository.
+Apache License, Version 2.0 — use it, modify it, redistribute it, including in commercial work. The full text is in `LICENSE` in this folder.
 
-This folder is normally installed on its own, so the terms have to travel with it. The licence URL and the notice line below are both part of the deal and must survive any copy you pass on:
+This folder is normally installed on its own, so the terms have to travel with it. Keep `LICENSE` and `NOTICE` beside this file, and reproduce these lines wherever you pass a copy on:
 
 ```
-Required Notice: Copyright 5Never5 (https://github.com/5Never5)
-https://polyformproject.org/licenses/noncommercial/1.0.0
+LLM Privacy Gateway — Copyright 2026 5Never5 (https://github.com/5Never5)
+Licensed under the Apache License, Version 2.0
+https://www.apache.org/licenses/LICENSE-2.0
 ```
+
+No third-party source is included here. The scripts are original work and import only the Python standard library; the libraries they call once installed — cryptography, pypdf, python-docx, openpyxl, Pillow, and optionally pytesseract or paddleocr — each stay under their own licence, and the repository's `THIRD-PARTY-NOTICES.md` records every one of them.

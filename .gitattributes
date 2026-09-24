@@ -1,0 +1,23 @@
+# Line endings.
+#
+# Every text file here is already stored with LF endings, so nothing in this
+# file changes the current content; it stops a future checkout from changing it.
+# core.autocrlf rewrites files on the way out, and the files below cannot
+# survive that: LICENSE and NOTICE are compared byte for byte against the
+# upstream corpus and they travel inside the skill folder, where a rewritten
+# character would be a changed licence.
+* text=auto
+
+LICENSE                     text eol=lf
+NOTICE                      text eol=lf
+THIRD-PARTY-NOTICES.md      text eol=lf
+llm-privacy-gateway/LICENSE text eol=lf
+llm-privacy-gateway/NOTICE  text eol=lf
+
+# Binary assets must never be converted, and must never be diffed as text.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+
+# Diagrams are text and diff usefully, but keep them LF like everything else.
+*.svg  text eol=lf

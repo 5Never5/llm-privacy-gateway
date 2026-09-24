@@ -1,0 +1,27 @@
+LLM Privacy Gateway — the skill folder
+Copyright 2026 5Never5 (https://github.com/5Never5)
+
+Licensed under the Apache License, Version 2.0 — see LICENSE in this folder.
+Free to use, modify and redistribute, including in commercial work.
+
+This notice is here because this folder is normally installed on its own: it is
+copied into a skills directory, where the repository root and its files do not
+follow. Everything a recipient needs to know about origin and terms is meant to
+be inside this folder, so that a copy passed on is still a licensed copy rather
+than an unattributed one.
+
+    LLM Privacy Gateway — Copyright 2026 5Never5 (https://github.com/5Never5)
+    Licensed under the Apache License, Version 2.0
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Reproduce those three lines wherever you redistribute this folder.
+
+Third-party components
+----------------------
+No third-party source is copied into this folder. The scripts in `scripts/` are
+original and import only the Python standard library; the libraries they call
+once installed — cryptography, pypdf, python-docx, openpyxl, Pillow, and
+optionally pytesseract or paddleocr — are installed by the user with
+`python scripts/setup_deps.py` and stay under their own licences. The
+repository's THIRD-PARTY-NOTICES.md records each one, its licence and its
+upstream URL.

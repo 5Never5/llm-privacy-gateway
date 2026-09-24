@@ -12,8 +12,8 @@
   <a href="#-install"><img src="https://img.shields.io/badge/Cross--Agent-Codex%20%7C%20DSH%20%7C%20OpenClaw%20%7C%20WorkBuddy%20%7C%20Claude%20%7C%20Doubao-0e83cd" alt="Cross-agent tools" /></a>
   <a href="#-security-model"><img src="https://img.shields.io/badge/Encryption-AES--256--GCM-critical" alt="AES-256-GCM" /></a>
   <a href="#-how-it-works"><img src="https://img.shields.io/badge/Zero%20Local%20Compute-CPU%20Only-success" alt="Zero local compute" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-F5A623" alt="PolyForm Noncommercial License 1.0.0" /></a>
-  <a href="docs/COMMERCIAL.md"><img src="https://img.shields.io/badge/Commercial%20use-licence%20required-4B5563" alt="A commercial licence is required for commercial use" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-007EC6" alt="Apache License 2.0" /></a>
+  <a href="THIRD-PARTY-NOTICES.md"><img src="https://img.shields.io/badge/third--party_notices-2DD4BF" alt="Third-party notices are listed" /></a>
 </p>
 
 <p align="center">
@@ -89,7 +89,7 @@ Then run once per environment:
 python scripts/setup_deps.py
 ```
 
-> **Using this at work?** Personal, educational, research, charitable and government use is free and needs no licence. A company using it for its own business — even only to redact its own contracts — needs a commercial licence. See [Commercial use](docs/COMMERCIAL.md); it is a flat fee and the software itself never changes.
+> **Using this at work?** There is nothing to buy. Apache-2.0 already covers commercial use, there is no paid tier and no permission to request. The only thing the licence asks is attribution: keep [NOTICE](NOTICE) and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) with any copy you pass on.
 
 ## ⚙️ Config
 
@@ -107,17 +107,14 @@ Read `references/rules.md` for the full rule set and their exact patterns.
 
 ## ☕ Support
 
-Spare-time project, no company behind it, no ads, no telemetry, and nothing gated behind a price. Personal and non-commercial use is free under the licence and stays that way; the only thing that is paid is permission to use it commercially, which is deliberate.
+Spare-time project, no company behind it, no ads, no telemetry, and nothing gated behind a price. The licence is Apache-2.0, so using it at work costs nothing and there is no permission to buy.
 
-So this is not a paywall, it is a tip jar. But count up what it has already given you: the afternoon you did not spend redacting a contract by hand, the client file you could hand to an API without hesitating first. If it saved you even one of those, sending a little back is the most direct way to keep the next one saved too. A tip turns into hours spent on this project, and those hours have no other source.
-
-**If you are using this at work, skip the tip and buy a licence** — same page, and it is what actually funds the next version.
+What the project needs is time, and a tip is the only thing on this page that buys any. So count up what it has already given you: the afternoon you did not spend redacting a contract by hand, the client file you could hand to an API without hesitating first. If it saved you even one of those, sending a little back is the most direct way to keep the next one saved too. A tip turns into hours spent on this project, and those hours have no other source.
 
 - ⭐ **Star the repository** — free, and it is what actually gets the project in front of people
 - 🐛 **Report a bug** — honestly worth more than a tip
 - 📣 **Send it to one person who needs it** — costs nothing, reaches exactly the right person
 - ☕ **Send a tip** — the most direct way to buy the project more time
-- 🧾 **Buy a commercial licence** — if a company is the one benefiting from it
 
 <p align="center">
   <a href="docs/SUPPORT.md"><b>☕ Support options · payment codes inside</b></a>
@@ -127,20 +124,22 @@ So this is not a paywall, it is a tip jar. But count up what it has already give
 
 ## 📄 License
 
-[PolyForm Noncommercial License 1.0.0](LICENSE) — free for personal, educational, research, charitable and government use. **Commercial use requires a licence**, which [Commercial use](docs/COMMERCIAL.md) explains and how to request one.
+[Apache License 2.0](LICENSE) — use it, modify it, redistribute it, including in commercial and closed-source work. No paid tier, no permission to request, no feature held back.
 
-The practical line: if you are running this inside a company to do that company's work, or shipping it in something you sell, that is commercial use. Everything else is free and stays free.
+The one thing it asks in return is attribution. Keep the [NOTICE](NOTICE) file with any copy you pass on. If you are redistributing the skill folder on its own — and that is how a skill is normally installed — then `llm-privacy-gateway/LICENSE` and `llm-privacy-gateway/NOTICE` are inside it, because a folder copied into someone else's skills directory does not bring the repository root along.
 
-Nothing is gated by this — no feature, no rule, no content. The licence decides *who may use the software commercially*, not what the software does. A commercial licence buys permission, not capability.
+**Third-party components.** Nothing from another project is vendored here, but the scripts do call libraries you install yourself: `cryptography`, `pypdf`, `python-docx`, `openpyxl`, `Pillow`, and optionally `pytesseract` or `paddleocr`. Each keeps its own licence and its own copyright. [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) lists every one of them, what it is used for, and what its licence requires of you — worth reading before bundling this into a product.
 
-Versions published before this change were released under the MIT License, and **that grant cannot be withdrawn**: anyone who obtained a copy while MIT applied keeps those rights for that copy, permanently. Only versions from this change onward are covered by PolyForm Noncommercial.
+Versions published before this one were released under the MIT License, and briefly under a non-commercial licence. Each of those grants stays valid for every copy taken while it applied, and cannot be withdrawn. This version and later are Apache-2.0.
 
 ## 🌐 Translations
 
-| Language | README | Skill | Rules | Use cases | Support | Commercial |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| English | this file | `SKILL.md` | `references/rules.md` | `docs/use-cases.md` | `docs/SUPPORT.md` | `docs/COMMERCIAL.md` |
-| Simplified Chinese | [README](docs/i18n/README.zh-CN.md) | [Skill](docs/i18n/SKILL.zh-CN.md) | [Rules](docs/i18n/RULES.zh-CN.md) | [Use cases](docs/i18n/use-cases.zh-CN.md) | [Support](docs/i18n/SUPPORT.zh-CN.md) | [Commercial](docs/i18n/COMMERCIAL.zh-CN.md) |
+| Language | README | Skill | Rules | Use cases | Support |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| English | this file | `SKILL.md` | `references/rules.md` | `docs/use-cases.md` | `docs/SUPPORT.md` |
+| Simplified Chinese | [README](docs/i18n/README.zh-CN.md) | [Skill](docs/i18n/SKILL.zh-CN.md) | [Rules](docs/i18n/RULES.zh-CN.md) | [Use cases](docs/i18n/use-cases.zh-CN.md) | [Support](docs/i18n/SUPPORT.zh-CN.md) |
+
+`NOTICE` and `THIRD-PARTY-NOTICES.md` are English only, deliberately: they are the attribution files that travel with redistributed copies, and a translated notice is an easy way to introduce a discrepancy between what a recipient reads and what the licence actually says.
 
 ---
 
