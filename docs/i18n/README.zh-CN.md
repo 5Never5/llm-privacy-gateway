@@ -1,4 +1,4 @@
-<p align="center"><b>🌐</b> <a href="../../README.md">English</a> · 简体中文</p>
+<p align="center"><a id="top"></a><b>🌐</b> <a href="../../README.md">English</a> · 简体中文</p>
 
 <p align="center"><img src="../../docs/banner.jpg" alt="LLM Privacy Gateway" width="100%" /></p>
 
@@ -12,6 +12,7 @@
   <a href="#-安装"><img src="https://img.shields.io/badge/Cross--Agent-Codex%20%7C%20DSH%20%7C%20OpenClaw%20%7C%20WorkBuddy%20%7C%20Claude%20%7C%20Doubao-0e83cd" alt="跨智能体工具" /></a>
   <a href="#-安全模型"><img src="https://img.shields.io/badge/Encryption-AES--256--GCM-critical" alt="AES-256-GCM" /></a>
   <a href="#-工作原理"><img src="https://img.shields.io/badge/Zero%20Local%20Compute-CPU%20Only-success" alt="零本地算力" /></a>
+  <a href="../../LICENSE"><img src="https://img.shields.io/badge/License-MIT-3DA639" alt="MIT 许可证" /></a>
 </p>
 
 <p align="center">
@@ -20,7 +21,8 @@
   <a href="#-安装">安装</a> &nbsp;·&nbsp;
   <a href="#-快速开始">快速开始</a> &nbsp;·&nbsp;
   <a href="#-安全模型">安全</a> &nbsp;·&nbsp;
-  <a href="#支持">支持</a>
+  <a href="#-支持">支持</a> &nbsp;·&nbsp;
+  <a href="#-许可证">许可证</a>
 </p>
 
 ---
@@ -97,13 +99,24 @@ python scripts/setup_deps.py
 - "模型完全理解，同时服务商无法解密"在密码学上不可能成立。本网关实际做到的是：真实数据无法被获取，被窃取的内容也无法还原。
 - 高危内容（核心机密）请使用 `--local` 或加密存储 —— 完全不让它上网。
 
-## 支持
+## ☕ 支持
 
-业余项目，背后没有公司。如果它为你省下了时间，点个 Star、报个 Bug 或请我喝杯咖啡都算数。
+业余项目，背后没有公司，没有广告，没有遥测，也没有付费版本。所有功能对所有人都免费 —— 你打不打赏，这一点都不会变。
+
+所以这里不是付费墙，只是一个随喜的钱箱。不过可以算一笔账：那些本该手动脱敏的下午，是它替你省下来的；那些以前不敢交给 API 的客户文件，现在可以直接给。既然真省下过时间，回赠一点，就是让下一个“省下来的下午”继续发生 —— 每一笔打赏都会变成实打实投在这个项目上的时间，而这些时间没有别的来源。
+
+- ⭐ **给项目点个 Star** —— 不花钱，而且真正能让项目被更多人看到
+- 🐛 **提一个 Bug** —— 说实话，比打赏更有价值
+- 📣 **转给一个需要它的人** —— 零成本，而且能精准触达
+- ☕ **打赏** —— 最直接地为这个项目争取更多时间
 
 <p align="center">
-  <a href="SUPPORT.zh-CN.md"><b>☕ 打赏方式</b></a>
+  <a href="SUPPORT.zh-CN.md"><b>☕ 打赏方式 · 收款码见此</b></a>
 </p>
+
+## 📄 许可证
+
+本项目基于 [MIT 许可证](../../LICENSE) 发布 —— 可以自由使用、Fork、嵌入商业产品，唯一的要求是版权声明随代码一同保留。
 
 ## 🌐 语言版本
 
@@ -114,4 +127,4 @@ python scripts/setup_deps.py
 
 ---
 
-<p align="center"><sub><a href="#">回到顶部</a></sub></p>
+<p align="center"><sub><a href="#top">回到顶部</a></sub></p>

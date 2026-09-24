@@ -1,4 +1,4 @@
-<p align="center"><b>🌐</b> English · <a href="docs/i18n/README.zh-CN.md">Chinese</a></p>
+<p align="center"><a id="top"></a><b>🌐</b> English · <a href="docs/i18n/README.zh-CN.md">Chinese</a></p>
 
 <p align="center"><img src="docs/banner.jpg" alt="LLM Privacy Gateway" width="100%" /></p>
 
@@ -12,6 +12,7 @@
   <a href="#-install"><img src="https://img.shields.io/badge/Cross--Agent-Codex%20%7C%20DSH%20%7C%20OpenClaw%20%7C%20WorkBuddy%20%7C%20Claude%20%7C%20Doubao-0e83cd" alt="Cross-agent tools" /></a>
   <a href="#-security-model"><img src="https://img.shields.io/badge/Encryption-AES--256--GCM-critical" alt="AES-256-GCM" /></a>
   <a href="#-how-it-works"><img src="https://img.shields.io/badge/Zero%20Local%20Compute-CPU%20Only-success" alt="Zero local compute" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3DA639" alt="MIT License" /></a>
 </p>
 
 <p align="center">
@@ -20,7 +21,8 @@
   <a href="#-install">Install</a> &nbsp;·&nbsp;
   <a href="#-quick-start">Quick start</a> &nbsp;·&nbsp;
   <a href="#-security-model">Security</a> &nbsp;·&nbsp;
-  <a href="#support">Support</a>
+  <a href="#-support">Support</a> &nbsp;·&nbsp;
+  <a href="#-license">License</a>
 </p>
 
 ---
@@ -97,13 +99,24 @@ Read `references/rules.md` for the full rule set and their exact patterns.
 - "The model fully understands it, yet the provider cannot decrypt it" is cryptographically impossible. What this gateway actually delivers: the real data cannot be obtained, and anything stolen cannot be reconstructed.
 - For high-risk content (core secrets), use `--local` or the encrypted store — keep it off the wire entirely.
 
-## Support
+## ☕ Support
 
-Spare-time project, no company behind it. If it saved you time, a star, a bug report or a tip all count.
+Spare-time project, no company behind it, no ads, no telemetry, no paid tier. Every feature stays free for everyone — that does not change whether you tip or not.
+
+So this is not a paywall, it is a tip jar. But count up what it has already given you: the afternoon you did not spend redacting a contract by hand, the client file you could hand to an API without hesitating first. If it saved you even one of those, sending a little back is the most direct way to keep the next one saved too. A tip turns into hours spent on this project, and those hours have no other source.
+
+- ⭐ **Star the repository** — free, and it is what actually gets the project in front of people
+- 🐛 **Report a bug** — honestly worth more than a tip
+- 📣 **Send it to one person who needs it** — costs nothing, reaches exactly the right person
+- ☕ **Send a tip** — the most direct way to buy the project more time
 
 <p align="center">
-  <a href="docs/SUPPORT.md"><b>☕ Support options</b></a>
+  <a href="docs/SUPPORT.md"><b>☕ Support options · payment codes inside</b></a>
 </p>
+
+## 📄 License
+
+Released under the [MIT License](LICENSE) — use it, fork it, embed it in commercial products. All that is asked in return is that the copyright notice travels with the code.
 
 ## 🌐 Translations
 
@@ -114,4 +127,4 @@ Spare-time project, no company behind it. If it saved you time, a star, a bug re
 
 ---
 
-<p align="center"><sub><a href="#">Back to top</a></sub></p>
+<p align="center"><sub><a href="#top">Back to top</a></sub></p>
