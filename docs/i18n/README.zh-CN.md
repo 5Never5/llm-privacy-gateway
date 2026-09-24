@@ -18,6 +18,7 @@
 <p align="center">
   <a href="#-工作原理">工作原理</a> &nbsp;·&nbsp;
   <a href="#-功能">功能</a> &nbsp;·&nbsp;
+  <a href="use-cases.zh-CN.md">使用场景</a> &nbsp;·&nbsp;
   <a href="#-安装">安装</a> &nbsp;·&nbsp;
   <a href="#-快速开始">快速开始</a> &nbsp;·&nbsp;
   <a href="#-安全模型">安全</a> &nbsp;·&nbsp;
@@ -99,6 +100,8 @@ python scripts/setup_deps.py
 - "模型完全理解，同时服务商无法解密"在密码学上不可能成立。本网关实际做到的是：真实数据无法被获取，被窃取的内容也无法还原。
 - 高危内容（核心机密）请使用 `--local` 或加密存储 —— 完全不让它上网。
 
+[使用场景](use-cases.zh-CN.md)会具体说明这些边界在真实文档上意味着什么、干跑到底会打印出什么，以及哪些情况下这个网关本身就是错的工具。依赖它之前值得花十分钟读一遍。
+
 ## ☕ 支持
 
 业余项目，背后没有公司，没有广告，没有遥测，也没有付费版本。所有功能对所有人都免费 —— 你打不打赏，这一点都不会变。
@@ -122,10 +125,10 @@ python scripts/setup_deps.py
 
 ## 🌐 语言版本
 
-| 语言 | README | 技能说明 | 规则 | 打赏 |
-| :--- | :--- | :--- | :--- | :--- |
-| English | [README](../../README.md) | [Skill](SKILL.zh-CN.md) | [Rules](RULES.zh-CN.md) | [Support](../SUPPORT.md) |
-| 简体中文 | 本页 | [技能说明](SKILL.zh-CN.md) | [规则](RULES.zh-CN.md) | [打赏](SUPPORT.zh-CN.md) |
+| 语言 | README | 技能说明 | 规则 | 使用场景 | 打赏 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| English | [README](../../README.md) | [Skill](../../llm-privacy-gateway/SKILL.md) | [Rules](../../llm-privacy-gateway/references/rules.md) | [Use cases](../use-cases.md) | [Support](../SUPPORT.md) |
+| 简体中文 | 本页 | [技能说明](SKILL.zh-CN.md) | [规则](RULES.zh-CN.md) | [使用场景](use-cases.zh-CN.md) | [打赏](SUPPORT.zh-CN.md) |
 
 ---
 

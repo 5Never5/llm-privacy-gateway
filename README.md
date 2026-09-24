@@ -18,6 +18,7 @@
 <p align="center">
   <a href="#-how-it-works">How it works</a> &nbsp;·&nbsp;
   <a href="#-features">Features</a> &nbsp;·&nbsp;
+  <a href="docs/use-cases.md">Use cases</a> &nbsp;·&nbsp;
   <a href="#-install">Install</a> &nbsp;·&nbsp;
   <a href="#-quick-start">Quick start</a> &nbsp;·&nbsp;
   <a href="#-security-model">Security</a> &nbsp;·&nbsp;
@@ -99,6 +100,8 @@ Read `references/rules.md` for the full rule set and their exact patterns.
 - "The model fully understands it, yet the provider cannot decrypt it" is cryptographically impossible. What this gateway actually delivers: the real data cannot be obtained, and anything stolen cannot be reconstructed.
 - For high-risk content (core secrets), use `--local` or the encrypted store — keep it off the wire entirely.
 
+[Use cases](docs/use-cases.md) walks through what those limits mean on real documents, what a dry run actually prints, and the cases where this gateway is simply the wrong tool. Worth ten minutes before you rely on it.
+
 ## ☕ Support
 
 Spare-time project, no company behind it, no ads, no telemetry, no paid tier. Every feature stays free for everyone — that does not change whether you tip or not.
@@ -122,10 +125,10 @@ Released under the [MIT License](LICENSE) — use it, fork it, embed it in comme
 
 ## 🌐 Translations
 
-| Language | README | Skill | Rules | Support |
-| :--- | :--- | :--- | :--- | :--- |
-| English | this file | `SKILL.md` | `references/rules.md` | `docs/SUPPORT.md` |
-| Simplified Chinese | [README](docs/i18n/README.zh-CN.md) | [Skill](docs/i18n/SKILL.zh-CN.md) | [Rules](docs/i18n/RULES.zh-CN.md) | [Support](docs/i18n/SUPPORT.zh-CN.md) |
+| Language | README | Skill | Rules | Use cases | Support |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| English | this file | `SKILL.md` | `references/rules.md` | `docs/use-cases.md` | `docs/SUPPORT.md` |
+| Simplified Chinese | [README](docs/i18n/README.zh-CN.md) | [Skill](docs/i18n/SKILL.zh-CN.md) | [Rules](docs/i18n/RULES.zh-CN.md) | [Use cases](docs/i18n/use-cases.zh-CN.md) | [Support](docs/i18n/SUPPORT.zh-CN.md) |
 
 ---
 
