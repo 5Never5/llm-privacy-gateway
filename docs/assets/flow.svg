@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560" role="img" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" aria-label="How a request travels: files are parsed and sensitive values are replaced on your machine, only masked text reaches the provider, and responses are restored and audited locally.">
+  <title>How a request travels through LLM Privacy Gateway</title>
+
+  <defs>
+    <marker id="arrowTeal" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M1,1 L11,6 L1,11 z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="arrowGold" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M1,1 L11,6 L1,11 z" fill="#F5A623"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="560" rx="18" fill="#0B1622"/>
+
+  <!-- Heading -->
+  <text x="56" y="58" font-size="26" font-weight="600" fill="#E8F3F8">How a request travels</text>
+  <text x="56" y="84" font-size="14" fill="#7C94A6">Sensitive values are replaced on your machine, before anything leaves it.</text>
+
+  <!-- Trust boundary -->
+  <line x1="692" y1="108" x2="692" y2="384" stroke="#1E3446" stroke-width="1.5" stroke-dasharray="5 6"/>
+
+  <!-- ===== Left: your machine ===== -->
+  <rect x="56" y="104" width="576" height="284" rx="14" fill="#0E2130" stroke="#1D4457"/>
+  <text x="80" y="134" font-size="11" letter-spacing="1.6" fill="#2DD4BF">TRUSTED · YOUR MACHINE</text>
+
+  <rect x="80" y="148" width="256" height="104" rx="10" fill="#132B3C" stroke="#21516A"/>
+  <circle cx="112" cy="181" r="15" fill="#123C46" stroke="#2DD4BF" stroke-width="1.5"/>
+  <text x="112" y="187" font-size="14" font-weight="700" fill="#2DD4BF" text-anchor="middle">1</text>
+  <text x="140" y="188" font-size="17" font-weight="600" fill="#E6F2F8">Extract</text>
+  <text x="96" y="221" font-size="12.5" fill="#8AA3B5">PDF · Word · Excel · image</text>
+  <text x="96" y="239" font-size="12.5" fill="#8AA3B5">parsed here, OCR included</text>
+
+  <rect x="352" y="148" width="256" height="104" rx="10" fill="#132B3C" stroke="#21516A"/>
+  <circle cx="384" cy="181" r="15" fill="#123C46" stroke="#2DD4BF" stroke-width="1.5"/>
+  <text x="384" y="187" font-size="14" font-weight="700" fill="#2DD4BF" text-anchor="middle">2</text>
+  <text x="412" y="188" font-size="17" font-weight="600" fill="#E6F2F8">Mask</text>
+  <text x="368" y="221" font-size="12.5" fill="#8AA3B5">real values &#8594; session tokens</text>
+  <text x="368" y="239" font-size="12.5" fill="#8AA3B5">Jane Doe &#8594; {NAME-a1b2}</text>
+
+  <rect x="80" y="272" width="256" height="104" rx="10" fill="#1E2416" stroke="#56471E"/>
+  <circle cx="112" cy="305" r="15" fill="#332D12" stroke="#F5A623" stroke-width="1.5"/>
+  <text x="112" y="311" font-size="14" font-weight="700" fill="#F5A623" text-anchor="middle">4</text>
+  <text x="140" y="312" font-size="17" font-weight="600" fill="#E6F2F8">Restore</text>
+  <text x="96" y="345" font-size="12.5" fill="#C4B08E">answers decoded locally</text>
+  <text x="96" y="363" font-size="12.5" fill="#C4B08E">leak check catches real values</text>
+
+  <rect x="352" y="272" width="256" height="104" rx="10" fill="#1E2416" stroke="#56471E"/>
+  <circle cx="384" cy="305" r="15" fill="#332D12" stroke="#F5A623" stroke-width="1.5"/>
+  <text x="384" y="311" font-size="14" font-weight="700" fill="#F5A623" text-anchor="middle">5</text>
+  <text x="412" y="312" font-size="17" font-weight="600" fill="#E6F2F8">Audit</text>
+  <text x="368" y="345" font-size="12.5" fill="#C4B08E">every request appended to</text>
+  <text x="368" y="363" font-size="12.5" fill="#C4B08E">audit.jsonl on your disk</text>
+
+  <!-- ===== Arrows across the boundary ===== -->
+  <line x1="640" y1="200" x2="741" y2="200" stroke="#2DD4BF" stroke-width="2.5" marker-end="url(#arrowTeal)"/>
+  <line x1="744" y1="324" x2="643" y2="324" stroke="#F5A623" stroke-width="2.5" marker-end="url(#arrowGold)"/>
+
+  <!-- ===== Right: provider ===== -->
+  <rect x="752" y="104" width="392" height="284" rx="14" fill="#1A1526" stroke="#38284F"/>
+  <text x="776" y="134" font-size="11" letter-spacing="1.6" fill="#A855F7">UNTRUSTED · PROVIDER OR RELAY</text>
+
+  <rect x="776" y="210" width="344" height="104" rx="10" fill="#221A33" stroke="#43305E"/>
+  <circle cx="808" cy="243" r="15" fill="#33204A" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="808" y="249" font-size="14" font-weight="700" fill="#C084FC" text-anchor="middle">3</text>
+  <text x="836" y="250" font-size="17" font-weight="600" fill="#EDE4F8">Official API or relay</text>
+  <text x="792" y="286" font-size="12.5" fill="#A99BC0">only tokens arrive here, so nothing</text>
+  <text x="792" y="304" font-size="12.5" fill="#A99BC0">reconstructable is ever transmitted</text>
+
+  <!-- ===== Bottom comparison ===== -->
+  <rect x="56" y="428" width="532" height="108" rx="12" fill="#0A1C24" stroke="#14323D"/>
+  <text x="80" y="458" font-size="11" letter-spacing="1.6" fill="#22D3EE">LEAVES THE MACHINE</text>
+  <text x="80" y="487" font-size="15" fill="#C9DCE6">Masked text and session tokens.</text>
+  <text x="80" y="511" font-size="15" fill="#8AA3B5">Nothing that can be turned back into data.</text>
+
+  <rect x="612" y="428" width="532" height="108" rx="12" fill="#150F21" stroke="#33254A"/>
+  <text x="636" y="458" font-size="11" letter-spacing="1.6" fill="#C084FC">STAYS ON THE MACHINE</text>
+  <text x="636" y="487" font-size="15" fill="#D8C9EC">Originals · the token map</text>
+  <text x="636" y="511" font-size="15" fill="#A99BC0">the AES key · audit.jsonl</text>
+</svg>
