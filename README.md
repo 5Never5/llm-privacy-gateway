@@ -74,6 +74,10 @@ Copy `references/config.example.json` → `~/.llm-privacy-gate/config.json`. Pri
 - "Model fully understands + provider can't decrypt" is cryptographically impossible. This gateway delivers: real data unobtainable, theft unreconstructable.
 - High-risk content (core secrets): use `--local` or encrypted storage — keep off the wire.
 
+## Support
+
+Spare-time project, no company behind it. If it saved you time, a star, a bug report or a tip all count: **[Support options](docs/SUPPORT.md)**
+
 ## Translations
 
-- Simplified Chinese (zh-CN): [README](docs/i18n/README.zh-CN.md) · [Skill](docs/i18n/SKILL.zh-CN.md) · [Rules](docs/i18n/RULES.zh-CN.md)
+- Simplified Chinese (zh-CN): [README](docs/i18n/README.zh-CN.md) · [Skill](docs/i18n/SKILL.zh-CN.md) · [Rules](docs/i18n/RULES.zh-CN.md) · [Support](docs/i18n/SUPPORT.zh-CN.md)
