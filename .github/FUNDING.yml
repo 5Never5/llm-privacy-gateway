@@ -1,0 +1,9 @@
+# Links shown behind the "Sponsor" button in the repository sidebar.
+#
+# There is no `github:` entry on purpose: a button that leads to an empty
+# sponsors profile is worse than no button at all. Everything -- both codes and
+# the scan instructions -- lives on the support page.
+#
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+custom: ["https://github.com/5Never5/llm-privacy-gateway/blob/main/docs/SUPPORT.md"]

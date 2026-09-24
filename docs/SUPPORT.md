@@ -23,6 +23,8 @@ All four rows below are real help. The tip is the only one that turns straight i
 
 Both codes are static and can be scanned repeatedly. Use the app that matches the code — the green card is WeChat Pay, the blue one is Alipay.
 
+The **Sponsor** button in the repository sidebar lands on this page, so the codes are one click away from the README.
+
 <p align="center">
   <img src="assets/wechat-pay.png" alt="WeChat Pay QR code" width="240" />
   &nbsp;&nbsp;&nbsp;&nbsp;

@@ -112,6 +112,8 @@ python scripts/setup_deps.py
 
 <p align="center">
   <a href="SUPPORT.zh-CN.md"><b>☕ 打赏方式 · 收款码见此</b></a>
+  <br />
+  <sub>侧边栏的 <b>Sponsor</b> 按钮指向的也是这一页。</sub>
 </p>
 
 ## 📄 许可证

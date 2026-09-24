@@ -112,6 +112,8 @@ So this is not a paywall, it is a tip jar. But count up what it has already give
 
 <p align="center">
   <a href="docs/SUPPORT.md"><b>☕ Support options · payment codes inside</b></a>
+  <br />
+  <sub>The <b>Sponsor</b> button in the sidebar opens the same page.</sub>
 </p>
 
 ## 📄 License

@@ -23,6 +23,8 @@
 
 两个收款码都是静态码，可以重复扫码。用对应的应用扫即可 —— **绿框是微信支付，蓝框是支付宝**。
 
+仓库侧边栏的 **Sponsor** 按钮也指向这一页，从 README 点过来只需一下。
+
 <p align="center">
   <img src="../assets/wechat-pay.png" alt="微信支付收款码" width="240" />
   &nbsp;&nbsp;&nbsp;&nbsp;
