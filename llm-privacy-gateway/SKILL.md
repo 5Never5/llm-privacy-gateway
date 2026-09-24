@@ -117,3 +117,14 @@ API keys are always injected through env vars (e.g. `OPENAI_API_KEY`, `RELAY_API
 - Anything the model returns is visible to the endpoint;
 - "Model fully understands + provider cannot decrypt" is not achievable in the absolute; this gateway delivers "real sensitive data unobtainable, theft unreconstructable";
 - For high-risk content (core business secrets), prefer `--local` or encrypted storage so it never leaves at all.
+
+## Licence
+
+PolyForm Noncommercial License 1.0.0 — free for personal, educational, research, charitable and government use. **Commercial use requires a licence**: see `docs/COMMERCIAL.md` in the repository.
+
+This folder is normally installed on its own, so the terms have to travel with it. The licence URL and the notice line below are both part of the deal and must survive any copy you pass on:
+
+```
+Required Notice: Copyright 5Never5 (https://github.com/5Never5)
+https://polyformproject.org/licenses/noncommercial/1.0.0
+```

@@ -123,6 +123,17 @@ API Key 一律通过环境变量注入（如 `OPENAI_API_KEY`、`RELAY_API_KEY`�
 - 绝对意义上"模型完全理解 + 服务商无法解密"不可兼得；本网关实现"真实敏感数据不可获取、窃取不可还原"；
 - 高危内容（核心商业机密）优先 `--local` 或加密存储，不出域。
 
+## 许可证
+
+PolyForm 非商业许可证 1.0.0 —— 个人、教育、科研、慈善与政府用途免费。**商业用途需要取得授权**：见仓库中的 `docs/COMMERCIAL.md`（中文版 `docs/i18n/COMMERCIAL.zh-CN.md`）。
+
+这个文件夹通常是单独安装的，所以条款必须跟着它走。许可证网址与下面这行声明都是条款的一部分，转发任何副本时都必须保留：
+
+```
+Required Notice: Copyright 5Never5 (https://github.com/5Never5)
+https://polyformproject.org/licenses/noncommercial/1.0.0
+```
+
 ---
 
 <p align="center"><b>🌐</b> <a href="../../README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="RULES.zh-CN.md">中文规则说明</a> · <a href="../../llm-privacy-gateway/SKILL.md">英文 SKILL</a></p>

@@ -2,24 +2,35 @@
 
 <h1 align="center">☕ Support</h1>
 
-<p align="center"><b>No company, no ads, no telemetry, no paid tier, no investor to report to — and the code is MIT, so everyone already has the same rights.</b></p>
+<p align="center"><b>No company, no ads, no telemetry, no investor to report to — and nothing here is locked behind a price.</b></p>
 
-<p align="center"><sub>Support is entirely optional — every feature stays free for everyone, whether you tip or not.</sub></p>
+<p align="center"><sub>Support is entirely optional. Personal and non-commercial use is free under the licence; a company using this for its business should buy a licence rather than tip.</sub></p>
 
 ---
 
 ## Ways to help
 
-All four rows below are real help. The tip is the only one that turns straight into maintenance hours, which is why it is the one this page is actually about.
+All five rows below are real help. The tip and the licence are the two that turn straight into maintenance hours, which is why this page is actually about them.
 
 | | What | Why it matters |
 | :---: | :--- | :--- |
 | ⭐ | **Star the repository** | Free, and it is what actually gets the project in front of people |
 | 🐞 | **Report a bug, open a pull request** | Frequently worth more than a tip |
 | 📣 | **Tell somebody who needs it** | Costs nothing, reaches exactly the right person |
-| ☕ | **Send a tip** | The most direct way to buy the project more time — codes below |
+| 🧾 | **Buy a commercial licence** | If a company is the one benefiting — see [Commercial use](COMMERCIAL.md) |
+| ☕ | **Send a tip** | For individuals; the most direct way to buy the project more time — codes below |
+
+## Using it at work?
+
+**Do not tip — buy a licence.** A tip is a gift from an individual. A company using this software for its own business needs a commercial licence, and buying one is both the honest route and the one that funds the project in a way donations never will.
+
+It is a flat fee quoted per request, and the software is identical either way — nothing is gated, and a licence buys permission, not capability. [Commercial use](COMMERCIAL.md) has the detail, and a request takes one issue.
+
+Want to evaluate it internally before deciding? Say so, and a limited evaluation permission can normally be arranged at no charge — which keeps a pilot inside the licence instead of in a grey area.
 
 ## Tips
+
+*For individuals. If a company is the one benefiting, see the section above.*
 
 Both codes are static and can be scanned repeatedly. Use the app that matches the code — the green card is WeChat Pay, the blue one is Alipay.
 
@@ -53,9 +64,11 @@ If you would rather use another route — GitHub Sponsors, Ko-fi, Buy Me a Coffe
 
 ## Transparency
 
-There is no business behind this repository and no plan to start one. The code is [MIT licensed](../LICENSE), and that licence already hands everyone the same rights — so nothing received buys a private build, a roadmap slot or priority support. There is nothing left to sell.
+The licence is what is sold, not access. [PolyForm Noncommercial 1.0.0](../LICENSE) makes personal, educational, research, charitable and government use free; commercial use needs a licence, and [Commercial use](COMMERCIAL.md) draws that line precisely.
 
-It buys the maintainer some time to keep the thing working, and that is all it is.
+So a tip buys nothing except time — no private build, no roadmap slot, no priority support. Features are not gated and will not be.
+
+That is the whole model: one licence for companies, a tip jar for individuals, the same software for both. This is a spare-time project, and those two are what keep it going.
 
 ## Thank you
 

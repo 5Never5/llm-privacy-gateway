@@ -12,7 +12,8 @@
   <a href="#-安装"><img src="https://img.shields.io/badge/Cross--Agent-Codex%20%7C%20DSH%20%7C%20OpenClaw%20%7C%20WorkBuddy%20%7C%20Claude%20%7C%20Doubao-0e83cd" alt="跨智能体工具" /></a>
   <a href="#-安全模型"><img src="https://img.shields.io/badge/Encryption-AES--256--GCM-critical" alt="AES-256-GCM" /></a>
   <a href="#-工作原理"><img src="https://img.shields.io/badge/Zero%20Local%20Compute-CPU%20Only-success" alt="零本地算力" /></a>
-  <a href="../../LICENSE"><img src="https://img.shields.io/badge/License-MIT-3DA639" alt="MIT 许可证" /></a>
+  <a href="../../LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-F5A623" alt="PolyForm 非商业许可证 1.0.0" /></a>
+  <a href="COMMERCIAL.zh-CN.md"><img src="https://img.shields.io/badge/Commercial%20use-licence%20required-4B5563" alt="商业用途需取得授权" /></a>
 </p>
 
 <p align="center">
@@ -88,6 +89,8 @@ python scripts/gateway.py --file ./confidential/roadmap.docx --endpoint relay --
 python scripts/setup_deps.py
 ```
 
+> **要在公司里用？** 个人、教育、科研、慈善与政府用途免费，无需授权。但公司把它用于自身业务 —— 哪怕只是用来脱敏自家合同 —— 属于商业用途，需要取得商业授权。详见 [商业用途](COMMERCIAL.zh-CN.md)：一次性费用，软件本身不会有任何差别。
+
 ## ⚙️ 配置
 
 复制 `references/config.example.json` 到 `~/.llm-privacy-gate/config.json`。优先级：`--config` → `LPG_CONFIG` → `~/.llm-privacy-gate/config.json` → 内置示例。API Key 仅从环境变量读取。
@@ -104,14 +107,17 @@ python scripts/setup_deps.py
 
 ## ☕ 支持
 
-业余项目，背后没有公司，没有广告，没有遥测，也没有付费版本。所有功能对所有人都免费 —— 你打不打赏，这一点都不会变。
+业余项目，背后没有公司，没有广告，没有遥测，也没有任何功能被锁在价格后面。个人与非商业用途依据许可证免费，并且一直免费；唯一收费的是商业使用许可，这是有意为之。
 
 所以这里不是付费墙，只是一个随喜的钱箱。不过可以算一笔账：那些本该手动脱敏的下午，是它替你省下来的；那些以前不敢交给 API 的客户文件，现在可以直接给。既然真省下过时间，回赠一点，就是让下一个“省下来的下午”继续发生 —— 每一笔打赏都会变成实打实投在这个项目上的时间，而这些时间没有别的来源。
+
+**如果是在公司里用，请别打赏，直接买授权** —— 在同一页，而且那才是真正支撑下一个版本的东西。
 
 - ⭐ **给项目点个 Star** —— 不花钱，而且真正能让项目被更多人看到
 - 🐛 **提一个 Bug** —— 说实话，比打赏更有价值
 - 📣 **转给一个需要它的人** —— 零成本，而且能精准触达
 - ☕ **打赏** —— 最直接地为这个项目争取更多时间
+- 🧾 **购买商业授权** —— 如果受益的是公司
 
 <p align="center">
   <a href="SUPPORT.zh-CN.md"><b>☕ 打赏方式 · 收款码见此</b></a>
@@ -121,14 +127,20 @@ python scripts/setup_deps.py
 
 ## 📄 许可证
 
-本项目基于 [MIT 许可证](../../LICENSE) 发布 —— 可以自由使用、Fork、嵌入商业产品，唯一的要求是版权声明随代码一同保留。
+本项目采用 [PolyForm 非商业许可证 1.0.0](../../LICENSE) 发布 —— 个人、教育、科研、慈善与政府用途免费。**商业用途需要取得授权**，[商业用途](../../docs/COMMERCIAL.md)说明了授权范围与申请方式（中文版见[这里](COMMERCIAL.zh-CN.md)）。
+
+实操上的分界：在公司里用它做公司的事，或者把它打包进你要卖的东西里，都算商业用途；其余情况一律免费，并且一直免费。
+
+这份许可证不锁任何东西 —— 不锁功能、不锁规则、不锁内容。它管的是**谁可以把它用于商业目的**，不是软件能做什么。买商业授权买的是许可，不是能力。
+
+本次换证之前发布的版本采用 MIT 许可证，**那份授权无法撤回**：任何在 MIT 期间取得副本的人，就那份副本永久保有当时授予的权利。只有本次变更之后的版本才适用 PolyForm 非商业许可证。
 
 ## 🌐 语言版本
 
-| 语言 | README | 技能说明 | 规则 | 使用场景 | 打赏 |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| English | [README](../../README.md) | [Skill](../../llm-privacy-gateway/SKILL.md) | [Rules](../../llm-privacy-gateway/references/rules.md) | [Use cases](../use-cases.md) | [Support](../SUPPORT.md) |
-| 简体中文 | 本页 | [技能说明](SKILL.zh-CN.md) | [规则](RULES.zh-CN.md) | [使用场景](use-cases.zh-CN.md) | [打赏](SUPPORT.zh-CN.md) |
+| 语言 | README | 技能说明 | 规则 | 使用场景 | 打赏 | 商业授权 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| English | [README](../../README.md) | [Skill](../../llm-privacy-gateway/SKILL.md) | [Rules](../../llm-privacy-gateway/references/rules.md) | [Use cases](../use-cases.md) | [Support](../SUPPORT.md) | [Commercial](../COMMERCIAL.md) |
+| 简体中文 | 本页 | [技能说明](SKILL.zh-CN.md) | [规则](RULES.zh-CN.md) | [使用场景](use-cases.zh-CN.md) | [打赏](SUPPORT.zh-CN.md) | [商业授权](COMMERCIAL.zh-CN.md) |
 
 ---
 

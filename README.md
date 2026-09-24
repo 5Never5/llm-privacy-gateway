@@ -12,7 +12,8 @@
   <a href="#-install"><img src="https://img.shields.io/badge/Cross--Agent-Codex%20%7C%20DSH%20%7C%20OpenClaw%20%7C%20WorkBuddy%20%7C%20Claude%20%7C%20Doubao-0e83cd" alt="Cross-agent tools" /></a>
   <a href="#-security-model"><img src="https://img.shields.io/badge/Encryption-AES--256--GCM-critical" alt="AES-256-GCM" /></a>
   <a href="#-how-it-works"><img src="https://img.shields.io/badge/Zero%20Local%20Compute-CPU%20Only-success" alt="Zero local compute" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3DA639" alt="MIT License" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-F5A623" alt="PolyForm Noncommercial License 1.0.0" /></a>
+  <a href="docs/COMMERCIAL.md"><img src="https://img.shields.io/badge/Commercial%20use-licence%20required-4B5563" alt="A commercial licence is required for commercial use" /></a>
 </p>
 
 <p align="center">
@@ -88,6 +89,8 @@ Then run once per environment:
 python scripts/setup_deps.py
 ```
 
+> **Using this at work?** Personal, educational, research, charitable and government use is free and needs no licence. A company using it for its own business — even only to redact its own contracts — needs a commercial licence. See [Commercial use](docs/COMMERCIAL.md); it is a flat fee and the software itself never changes.
+
 ## ⚙️ Config
 
 Copy `references/config.example.json` to `~/.llm-privacy-gate/config.json`. Resolution order: `--config` → `LPG_CONFIG` → `~/.llm-privacy-gate/config.json` → the built-in example. API keys are read from environment variables only.
@@ -104,14 +107,17 @@ Read `references/rules.md` for the full rule set and their exact patterns.
 
 ## ☕ Support
 
-Spare-time project, no company behind it, no ads, no telemetry, no paid tier. Every feature stays free for everyone — that does not change whether you tip or not.
+Spare-time project, no company behind it, no ads, no telemetry, and nothing gated behind a price. Personal and non-commercial use is free under the licence and stays that way; the only thing that is paid is permission to use it commercially, which is deliberate.
 
 So this is not a paywall, it is a tip jar. But count up what it has already given you: the afternoon you did not spend redacting a contract by hand, the client file you could hand to an API without hesitating first. If it saved you even one of those, sending a little back is the most direct way to keep the next one saved too. A tip turns into hours spent on this project, and those hours have no other source.
+
+**If you are using this at work, skip the tip and buy a licence** — same page, and it is what actually funds the next version.
 
 - ⭐ **Star the repository** — free, and it is what actually gets the project in front of people
 - 🐛 **Report a bug** — honestly worth more than a tip
 - 📣 **Send it to one person who needs it** — costs nothing, reaches exactly the right person
 - ☕ **Send a tip** — the most direct way to buy the project more time
+- 🧾 **Buy a commercial licence** — if a company is the one benefiting from it
 
 <p align="center">
   <a href="docs/SUPPORT.md"><b>☕ Support options · payment codes inside</b></a>
@@ -121,14 +127,20 @@ So this is not a paywall, it is a tip jar. But count up what it has already give
 
 ## 📄 License
 
-Released under the [MIT License](LICENSE) — use it, fork it, embed it in commercial products. All that is asked in return is that the copyright notice travels with the code.
+[PolyForm Noncommercial License 1.0.0](LICENSE) — free for personal, educational, research, charitable and government use. **Commercial use requires a licence**, which [Commercial use](docs/COMMERCIAL.md) explains and how to request one.
+
+The practical line: if you are running this inside a company to do that company's work, or shipping it in something you sell, that is commercial use. Everything else is free and stays free.
+
+Nothing is gated by this — no feature, no rule, no content. The licence decides *who may use the software commercially*, not what the software does. A commercial licence buys permission, not capability.
+
+Versions published before this change were released under the MIT License, and **that grant cannot be withdrawn**: anyone who obtained a copy while MIT applied keeps those rights for that copy, permanently. Only versions from this change onward are covered by PolyForm Noncommercial.
 
 ## 🌐 Translations
 
-| Language | README | Skill | Rules | Use cases | Support |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| English | this file | `SKILL.md` | `references/rules.md` | `docs/use-cases.md` | `docs/SUPPORT.md` |
-| Simplified Chinese | [README](docs/i18n/README.zh-CN.md) | [Skill](docs/i18n/SKILL.zh-CN.md) | [Rules](docs/i18n/RULES.zh-CN.md) | [Use cases](docs/i18n/use-cases.zh-CN.md) | [Support](docs/i18n/SUPPORT.zh-CN.md) |
+| Language | README | Skill | Rules | Use cases | Support | Commercial |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| English | this file | `SKILL.md` | `references/rules.md` | `docs/use-cases.md` | `docs/SUPPORT.md` | `docs/COMMERCIAL.md` |
+| Simplified Chinese | [README](docs/i18n/README.zh-CN.md) | [Skill](docs/i18n/SKILL.zh-CN.md) | [Rules](docs/i18n/RULES.zh-CN.md) | [Use cases](docs/i18n/use-cases.zh-CN.md) | [Support](docs/i18n/SUPPORT.zh-CN.md) | [Commercial](docs/i18n/COMMERCIAL.zh-CN.md) |
 
 ---
 
